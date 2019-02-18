@@ -14,7 +14,7 @@
   verbose="false">
   <testsuites>
     <testsuite name="scaleupstack/easy-object test suite">
-      <directory>./tests/phpunit/</directory>
+      <directory>./tests/PhpUnit/</directory>
     </testsuite>
   </testsuites>
   <filter>

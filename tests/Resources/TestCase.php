@@ -10,7 +10,7 @@
  * @link      https://github.com/scaleupstack/easy-object
  */
 
-namespace ScaleUpStack\EasyObject\Tests;
+namespace ScaleUpStack\EasyObject\Tests\Resources;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {

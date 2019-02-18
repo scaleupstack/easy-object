@@ -10,10 +10,10 @@
  * @link      https://github.com/scaleupstack/easy-object
  */
 
-namespace ScaleUpStack\EasyObject\Test;
+namespace ScaleUpStack\EasyObject\Tests\PhpUnit;
 
 use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
-use ScaleUpStack\EasyObject\Tests\TestCase;
+use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 use ScaleUpStack\EasyObject\UnexpectedValueException;
 
 /**
