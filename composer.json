@@ -1,0 +1,46 @@
+{
+    "name": "scaleupstack/easy-object",
+    "description": "Easy object handling, e.g. read-only properties, typed properties, or default constructor. No boilerplate code.",
+    "type": "library",
+    "keywords": [
+        "object",
+        "read-only property",
+        "read-only properties",
+        "typed property",
+        "typed properties",
+        "default constructor",
+        "entity",
+        "entities",
+        "value object",
+        "value objects",
+        "event",
+        "events",
+        "no boilerplate",
+        "boilerplate"
+    ],
+    "autoload": {
+        "psr-4": {
+            "ScaleUpStack\\EasyObject\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ScaleUpStack\\EasyObject\\Tests\\": ["tests/phpunit/", "tests/resources/", "tests/fixtures/"]
+        }
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Thomas Nunninger",
+            "email": "thomas.nunninger@scaleupventures.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "scaleupstack/assert": "^1.",
+        "scaleupstack/reflection": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7."
+    }
+}
