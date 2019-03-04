@@ -12,19 +12,40 @@
 
 namespace ScaleUpStack\EasyObject\Metadata;
 
+use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
+use ScaleUpStack\Annotations\Annotation\PropertyReadAnnotation;
 use ScaleUpStack\Annotations\Annotations;
 
 class ClassMetadata extends \Metadata\ClassMetadata
 {
-    /**
-     * @var array
-     */
     public $annotations;
 
-    /**
-     * @return string
-     */
-    public function serialize()
+    public $virtualPropertyMetadata = [];
+
+    public $virtualMethodMetadata = [];
+
+    public function __construct(string $name, Annotations $annotations)
+    {
+        parent::__construct($name);
+        $this->setAnnotations($annotations);
+    }
+
+    private function setAnnotations(Annotations $annotations)
+    {
+        $this->annotations = $annotations;
+
+        /** @var PropertyReadAnnotation $readPropertyAnnotation */
+        foreach ($annotations->annotationsByTag('property-read') as $readPropertyAnnotation) {
+            $this->virtualPropertyMetadata[$readPropertyAnnotation->propertyName()] = $readPropertyAnnotation;
+        }
+
+        /** @var MethodAnnotation $methodAnnotation */
+        foreach ($annotations->annotationsByTag('method') as $methodAnnotation) {
+            $this->virtualMethodMetadata[$methodAnnotation->methodName()] = $methodAnnotation;
+        }
+    }
+
+    public function serialize() : string
     {
         return serialize(
             [
@@ -41,9 +62,11 @@ class ClassMetadata extends \Metadata\ClassMetadata
     {
         list(
             $parent,
-            $this->annotations
+            $annotations
         ) = unserialize($str);
 
         parent::unserialize($parent);
+
+        $this->setAnnotations($annotations);
     }
 }
