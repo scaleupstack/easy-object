@@ -24,6 +24,26 @@ final class PropertyMetadataTest extends TestCase
 {
     /**
      * @test
+     * @covers ::__construct()
+     */
+    public function it_can_be_constructed_including_annotations()
+    {
+        // given a class name, a property name and some \ScaleUpStack\Annoations\Annotations
+        $className = FromFileReaderTestClass::class;
+        $propertyName = 'someProperty';
+        $annotations = new Annotations();
+
+        // when constructing the metadata
+        $metadata = new PropertyMetadata($className, $propertyName, $annotations);
+
+        // then the properties are available
+        $this->assertSame($className, $metadata->class);
+        $this->assertSame($propertyName, $metadata->name);
+        $this->assertSame($annotations, $metadata->annotations);
+    }
+
+    /**
+     * @test
      * @covers ::serialize()
      * @covers ::unserialize()
      */
@@ -32,9 +52,9 @@ final class PropertyMetadataTest extends TestCase
         // given PropertyMetadata with \ScaleUpStack\Annotations\Annotations
         $metadata = new PropertyMetadata(
             FromFileReaderTestClass::class,
-            'firstProperty'
+            'firstProperty',
+            new Annotations()
         );
-        $metadata->annotations = new Annotations();
 
         // when serializing and unserializng the metadata
         $unserialized = unserialize(serialize($metadata));

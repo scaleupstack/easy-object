@@ -21,6 +21,12 @@ class PropertyMetadata extends \Metadata\PropertyMetadata
      */
     public $annotations;
 
+    public function __construct(string $class, string $name, Annotations $annotations)
+    {
+        parent::__construct($class, $name);
+        $this->annotations = $annotations;
+    }
+
     /**
      * @return string
      */
