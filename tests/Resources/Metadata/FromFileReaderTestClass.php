@@ -19,11 +19,17 @@ namespace ScaleUpStack\EasyObject\Tests\Resources\Metadata;
  */
 class FromFileReaderTestClass
 {
+    /**
+     * @var string
+     */
     private $firstProperty = 'first value';
 
-    private $secondProperty = 'second value';
+    /**
+     * @var int
+     */
+    private $secondProperty = 42;
 
-    private $thirdProperty = 'third value';
+    private $thirdProperty = [];
 
     public function __call($name, $arguments)
     {
