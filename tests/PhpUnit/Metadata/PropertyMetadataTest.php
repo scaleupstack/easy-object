@@ -14,7 +14,7 @@ namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Metadata;
 
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
-use ScaleUpStack\EasyObject\Tests\Resources\Metadata\FromFileReaderTestClass;
+use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
 /**
@@ -29,7 +29,7 @@ final class PropertyMetadataTest extends TestCase
     public function it_can_be_constructed_including_annotations()
     {
         // given a class name, a property name and some \ScaleUpStack\Annoations\Annotations
-        $className = FromFileReaderTestClass::class;
+        $className = ClassForTesting::class;
         $propertyName = 'someProperty';
         $annotations = new Annotations();
 
@@ -51,7 +51,7 @@ final class PropertyMetadataTest extends TestCase
     {
         // given PropertyMetadata with \ScaleUpStack\Annotations\Annotations
         $metadata = new PropertyMetadata(
-            FromFileReaderTestClass::class,
+            ClassForTesting::class,
             'firstProperty',
             new Annotations()
         );

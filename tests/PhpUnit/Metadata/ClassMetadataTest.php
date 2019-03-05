@@ -16,7 +16,7 @@ use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
 use ScaleUpStack\Annotations\Annotation\PropertyReadAnnotation;
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Tests\Resources\Metadata\FromFileReaderTestClass;
+use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
 /**
@@ -32,7 +32,7 @@ final class ClassMetadataTest extends TestCase
     public function it_stores_metadata_for_virtual_properties_and_methods()
     {
         // given a class name, and some Annotations with a PropertyReadAnnotation and a MethodAnnotation
-        $className = FromFileReaderTestClass::class;
+        $className = ClassForTesting::class;
         $annotations = new Annotations();
         $annotations->add('property-read', 'string $someProperty', Annotations::CONTEXT_CLASS);
         $annotations->add('method', 'int getSomeProperty()', Annotations::CONTEXT_CLASS);

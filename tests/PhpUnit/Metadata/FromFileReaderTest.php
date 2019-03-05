@@ -19,7 +19,7 @@ use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\FromFileReader;
 use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
-use ScaleUpStack\EasyObject\Tests\Resources\Metadata\FromFileReaderTestClass;
+use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
 /**
@@ -52,7 +52,7 @@ final class FromFileReaderTest extends TestCase
     public function it_analyzes_class_level_metadata()
     {
         // given a factory as provided via setUp() and a class name
-        $className = FromFileReaderTestClass::class;
+        $className = ClassForTesting::class;
 
         // when retrieving the metadata
         $hierarchyMetadata = $this->factory->getMetadataForClass($className);
@@ -88,7 +88,7 @@ final class FromFileReaderTest extends TestCase
     public function it_analyzes_real_properties_metadata()
     {
         // given a factory as provided via setUp() and a class name
-        $className = FromFileReaderTestClass::class;
+        $className = ClassForTesting::class;
 
         // when retrieving the metadata
         $hierarchyMetadata = $this->factory->getMetadataForClass($className);

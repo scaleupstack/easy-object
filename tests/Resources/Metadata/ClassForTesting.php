@@ -17,7 +17,7 @@ namespace ScaleUpStack\EasyObject\Tests\Resources\Metadata;
  * @method string secondProperty()
  * @method string getThirdProperty()
  */
-class FromFileReaderTestClass
+class ClassForTesting
 {
     /**
      * @var string
