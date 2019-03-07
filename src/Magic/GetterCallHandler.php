@@ -14,6 +14,8 @@ namespace ScaleUpStack\EasyObject\Magic;
 
 use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
+use ScaleUpStack\Reflection\Reflection;
 
 class GetterCallHandler implements CallHandler
 {
@@ -28,12 +30,7 @@ class GetterCallHandler implements CallHandler
         }
 
         // virtual getters can have a 'get' prefix, and must have a corresponding property
-        $propertyName = $methodName;
-        if ('get' === substr($methodName, 0, 3)) {
-            $propertyName = lcfirst(
-                substr($methodName, 3)
-            );
-        }
+        $propertyName = $this->propertyName($methodName);
 
         if (! array_key_exists($propertyName, $classMetadata->propertyMetadata)) {
             return false;
@@ -46,8 +43,68 @@ class GetterCallHandler implements CallHandler
         return ([] === $methodMetadata->parameters());
     }
 
-    public function execute(ClassMetadata $classMetadata, string $methodName, array $arguments)
+    public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
-        // TODO: Implement execute() method.
+        if (! $this->canHandle($methodName, $classMetadata)) {
+            throw new \Error(
+                sprintf(
+                    'Call to undefined method %s::%s()',
+                    $classMetadata->name,
+                    $methodName
+                )
+            );
+        }
+
+        if (0 !== count($arguments)) {
+            throw new \ArgumentCountError(
+                sprintf(
+                    'Too many arguments to function %s::%s(), %s passed and exactly 0 expected',
+                    $classMetadata->name,
+                    $methodName,
+                    count($arguments)
+                )
+            );
+        }
+
+        $propertyName = $this->propertyName($methodName);
+        $propertyValue = Reflection::getPropertyValue($object, $propertyName);
+
+        /** @var MethodAnnotation $virtualMethodAnnotation */
+        $virtualMethodAnnotation = $classMetadata->virtualMethodMetadata[$methodName];
+        $returnType = $virtualMethodAnnotation->returnType();
+
+        if (! is_null($returnType)) {
+            $dataType = new DataTypeMetadata($returnType);
+            $isReturnValueValid = $dataType->validateVariable($propertyValue, $object);
+
+            if (! $isReturnValueValid) {
+                // TODO: Handle error on strict_types declaration of calling context (not file defining the class) :-/
+
+                throw new \TypeError(
+                    $errorMessage = sprintf(
+                        'Return value of %s::%s() must be of the type %s, %s returned',
+                        $classMetadata->name,
+                        $methodName,
+                        $returnType,
+                        gettype($propertyValue)
+                    )
+                );
+            }
+        }
+
+        return $propertyValue;
+    }
+
+    private function propertyName(string $methodName) : string
+    {
+        $propertyName = $methodName;
+
+        if ('get' === substr($methodName, 0, 3)) {
+            $propertyName = lcfirst(
+                substr($methodName, 3)
+            );
+        }
+
+        return $propertyName;
     }
 }

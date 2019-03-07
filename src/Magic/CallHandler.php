@@ -21,5 +21,5 @@ interface CallHandler
     /**
      * @return mixed
      */
-    public function execute(ClassMetadata $classMetadata, string $methodName, array $arguments);
+    public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata);
 }

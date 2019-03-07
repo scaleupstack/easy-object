@@ -17,7 +17,6 @@ use ScaleUpStack\EasyObject\Magic\GetterCallHandler;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
-use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
 /**
@@ -59,6 +58,7 @@ final class GetterCallHandlerTest extends TestCase
      * @test
      * @dataProvider provides_data_of_registered_and_unregistered_virtual_getters
      * @covers ::canHandle()
+     * @covers ::propertyName()
      */
     public function it_knows_if_it_can_handle_a_virtual_method(
         string $methodName,
@@ -77,6 +77,117 @@ final class GetterCallHandlerTest extends TestCase
 
         // then the result is as expeced (as provided by the test method's parameter)
         $this->assertSame($expectedCanHandle, $canHandle);
+    }
+
+    public function provides_valid_return_types()
+    {
+        return [
+            ['int '],
+            [''],
+            [null],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provides_valid_return_types
+     * @covers ::execute()
+     */
+    public function it_executes_a_virtual_getter($returnType)
+    {
+        // given a GetterCallHandler, an object, and the object's ClassMetadata
+        $handler = new GetterCallHandler();
+        $object = new ClassForMagicTesting();
+        $metadata = $this->getClassMetadata(
+            'method',
+            $returnType . 'getSomeProperty()'
+        );
+
+        // when executing the magic method
+        $result = $handler->execute($object, 'getSomeProperty', [], $metadata);
+
+        // then the result is the properties value
+        $this->assertSame(42, $result);
+    }
+
+    /**
+     * @test
+     * @covers ::execute()
+     */
+    public function it_throws_an_exception_when_the_returned_value_is_of_wrong_type()
+    {
+        // given a GetterCallHandler, an object, and the object's ClassMetadata
+        $handler = new GetterCallHandler();
+        $object = new ClassForMagicTesting();
+        $metadata = $this->getClassMetadata(
+            'method',
+            'string getSomeProperty()'
+        );
+
+        // when executing the method
+        // then an exception is thrown
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage(
+            'Return value of ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting::getSomeProperty() must be of the type string, integer returned'
+        );
+
+        $handler->execute($object, 'getSomeProperty', [], $metadata);
+    }
+
+    /**
+     * @test
+     * @covers ::execute()
+     */
+    public function it_throws_an_exception_when_it_cannot_handle_the_method()
+    {
+        // given a GetterCallHandler, an object, and the object's ClassMetadata
+        $handler = new GetterCallHandler();
+        $object = new ClassForMagicTesting();
+        $metadata = $this->getClassMetadata(
+            'method',
+            'string getSomeProperty()'
+        );
+
+        // when executing a virtual method that it cannot handle
+        // then an exception is thrown
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'Call to undefined method %s::%s()',
+                ClassForMagicTesting::class,
+                'unknownMethod'
+            )
+        );
+
+        $handler->execute($object, 'unknownMethod', [], $metadata);
+    }
+
+    /**
+     * @test
+     * @covers ::execute()
+     */
+    public function it_throws_an_exception_when_provided_to_many_method_parameters()
+    {
+        // given a GetterCallHandler, an object, and the object's ClassMetadata
+        $handler = new GetterCallHandler();
+        $object = new ClassForMagicTesting();
+        $metadata = $this->getClassMetadata(
+            'method',
+            'int getSomeProperty()'
+        );
+
+        // when providing any parameter to the virtual method
+        // then an exception is thrown
+        $this->expectException(\ArgumentCountError::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'Too many arguments to function %s::%s(), 1 passed and exactly 0 expected',
+                ClassForMagicTesting::class,
+                'getSomeProperty'
+            )
+        );
+
+        $handler->execute($object, 'getSomeProperty', ['some param value'], $metadata);
     }
 }
 
