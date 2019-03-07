@@ -13,7 +13,7 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\EasyObject\Magic\Dispatcher;
-use ScaleUpStack\EasyObject\Magic\GetterCallHandler;
+use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForDispatcherTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
@@ -34,7 +34,7 @@ final class DispatcherTest extends TestCase
         // given an object, and a list of supported call handlers
         $object = new ClassForDispatcherTesting();
         $supportedCallHandlers = [
-            GetterCallHandler::class
+            VirtualGetter::class
         ];
 
         // when invoking an allowed method
@@ -58,7 +58,7 @@ final class DispatcherTest extends TestCase
         // given an object, and a list of supported call handlers
         $object = new ClassForDispatcherTesting();
         $supportedCallHandlers = [
-            GetterCallHandler::class
+            VirtualGetter::class
         ];
 
         // when invoking an unsupported method

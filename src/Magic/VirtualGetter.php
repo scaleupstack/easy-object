@@ -17,7 +17,7 @@ use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
 use ScaleUpStack\Reflection\Reflection;
 
-class GetterCallHandler implements CallHandler
+final class VirtualGetter implements CallHandler
 {
     public function canHandle(string $methodName, ClassMetadata $classMetadata) : bool
     {

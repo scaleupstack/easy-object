@@ -13,16 +13,16 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\Annotations\Annotations;
-use ScaleUpStack\EasyObject\Magic\GetterCallHandler;
+use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
 /**
- * @coversDefaultClass \ScaleUpStack\EasyObject\Magic\GetterCallHandler
+ * @coversDefaultClass \ScaleUpStack\EasyObject\Magic\VirtualGetter
  */
-final class GetterCallHandlerTest extends TestCase
+final class VirtualGetterTest extends TestCase
 {
     private function getClassMetadata(string $annotationTag, string $annotationArguments) : ClassMetadata
     {
@@ -67,8 +67,8 @@ final class GetterCallHandlerTest extends TestCase
         bool $expectedCanHandle
     )
     {
-        // given a GetterCallHandler, and an object with its ClassMetadata
-        $handler = new GetterCallHandler();
+        // given a VirtualGetter call handler, and an object with its ClassMetadata
+        $handler = new VirtualGetter();
         // and an object's ClassMetadata with an annotation as provided by the test parameters
         $metadata = $this->getClassMetadata($annotationTag, $annotationArguments);
 
@@ -95,8 +95,8 @@ final class GetterCallHandlerTest extends TestCase
      */
     public function it_executes_a_virtual_getter($returnType)
     {
-        // given a GetterCallHandler, an object, and the object's ClassMetadata
-        $handler = new GetterCallHandler();
+        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
+        $handler = new VirtualGetter();
         $object = new ClassForMagicTesting();
         $metadata = $this->getClassMetadata(
             'method',
@@ -116,8 +116,8 @@ final class GetterCallHandlerTest extends TestCase
      */
     public function it_throws_an_exception_when_the_returned_value_is_of_wrong_type()
     {
-        // given a GetterCallHandler, an object, and the object's ClassMetadata
-        $handler = new GetterCallHandler();
+        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
+        $handler = new VirtualGetter();
         $object = new ClassForMagicTesting();
         $metadata = $this->getClassMetadata(
             'method',
@@ -140,8 +140,8 @@ final class GetterCallHandlerTest extends TestCase
      */
     public function it_throws_an_exception_when_it_cannot_handle_the_method()
     {
-        // given a GetterCallHandler, an object, and the object's ClassMetadata
-        $handler = new GetterCallHandler();
+        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
+        $handler = new VirtualGetter();
         $object = new ClassForMagicTesting();
         $metadata = $this->getClassMetadata(
             'method',
@@ -168,8 +168,8 @@ final class GetterCallHandlerTest extends TestCase
      */
     public function it_throws_an_exception_when_provided_to_many_method_parameters()
     {
-        // given a GetterCallHandler, an object, and the object's ClassMetadata
-        $handler = new GetterCallHandler();
+        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
+        $handler = new VirtualGetter();
         $object = new ClassForMagicTesting();
         $metadata = $this->getClassMetadata(
             'method',
