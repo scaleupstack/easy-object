@@ -14,6 +14,7 @@ namespace ScaleUpStack\EasyObject\Magic;
 
 use Metadata\MetadataFactory;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\EasyObject\Metadata\Factory;
 use ScaleUpStack\EasyObject\Metadata\FileLocator;
 use ScaleUpStack\EasyObject\Metadata\FromFileReader;
 
@@ -91,8 +92,7 @@ final class Dispatcher
 
     private function classMetadata(string $className) : ClassMetadata
     {
-        return $this->metadataFactory
-            ->getMetadataForClass($className)
+        return Factory::getMetadataForClass($className)
             ->classMetadata[$className];
     }
 }
