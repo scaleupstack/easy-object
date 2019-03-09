@@ -13,10 +13,21 @@
 namespace ScaleUpStack\EasyObject\Traits;
 
 use ScaleUpStack\EasyObject\Magic\Dispatcher;
-use ScaleUpStack\EasyObject\Magic\VirtualGetter;
+use ScaleUpStack\EasyObject\Magic\FixtureBuilder;
 
-trait EntityTrait
+trait FixtureBuilderTrait
 {
+    private $configuredProperties = [];
+
+    public static function configure() : self
+    {
+        return new self();
+    }
+
+    private function __construct()
+    {
+    }
+
     public function __call(string $method, array $parameters)
     {
         return Dispatcher::invoke(
@@ -24,7 +35,7 @@ trait EntityTrait
             $method,
             $parameters,
             [
-                VirtualGetter::class,
+                FixtureBuilder::class,
             ]
         );
     }

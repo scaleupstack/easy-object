@@ -27,10 +27,10 @@ final class EntityTraitTest extends TestCase
     public function it_supports_virtual_getters()
     {
         // given an entity
-        $enity = new EntityForTesting();
+        $entity = new EntityForTesting();
 
         // when calling the virtual getter
-        $value = $enity->someProperty();
+        $value = $entity->someProperty();
 
         // then the value of the property is returned
         $this->assertSame(42, $value);

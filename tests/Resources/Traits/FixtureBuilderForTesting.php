@@ -12,18 +12,14 @@
 
 namespace ScaleUpStack\EasyObject\Tests\Resources\Traits;
 
-use ScaleUpStack\EasyObject\Traits\EntityTrait;
+use ScaleUpStack\EasyObject\Traits\FixtureBuilderTrait;
+use ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting;
 
 /**
- * @method int someProperty()
+ * @method self withSomeProperty(int $someProperty)
+ * @method ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting build()
  */
-final class EntityForTesting
+final class FixtureBuilderForTesting
 {
-    use EntityTrait;
-
-    /**
-     * @var int
-     * @example random_int(10, 100)
-     */
-    private $someProperty = 42;
+    use FixtureBuilderTrait;
 }
