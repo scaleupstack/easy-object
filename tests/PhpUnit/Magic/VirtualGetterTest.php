@@ -58,7 +58,6 @@ final class VirtualGetterTest extends TestCase
      * @test
      * @dataProvider provides_data_of_registered_and_unregistered_virtual_getters
      * @covers ::canHandle()
-     * @covers ::propertyName()
      */
     public function it_knows_if_it_can_handle_a_virtual_method(
         string $methodName,

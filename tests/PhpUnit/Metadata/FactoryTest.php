@@ -17,6 +17,7 @@ use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\Factory;
 use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
+use ScaleUpStack\Reflection\Reflection;
 
 /**
  * @coversDefaultClass \ScaleUpStack\EasyObject\Metadata\Factory
@@ -30,8 +31,9 @@ final class FactoryTest extends TestCase
      */
     public function it_retrieves_class_metadata_for_a_classname()
     {
-        // given a class name
+        // given a class name, and a reset Factory
         $className = ClassForTesting::class;
+        Reflection::setStaticPropertyValue(Factory::class, 'metadataFactory', null);
 
         // when getting the metadata for a class
         $hierarchyMetadata = Factory::getMetadataForClass($className);
