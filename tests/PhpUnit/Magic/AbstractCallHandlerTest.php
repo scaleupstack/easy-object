@@ -181,7 +181,6 @@ final class AbstractCallHandlerTest extends TestCase
             ->invoke(
                 $this->callHandler,
                 'withSomeProperty',
-                1,
                 [
                     'some value'
                 ],
@@ -205,7 +204,7 @@ final class AbstractCallHandlerTest extends TestCase
         $this->expectException(\ArgumentCountError::class);
         $this->expectExceptionMessage(
             sprintf(
-                'Too many arguments to function %s::%s(), 1 passed and exactly 0 expected',
+                'Too few arguments to function %s::%s(), 0 passed and exactly 1 expected',
                 ClassForAbstractCallHandlerTesting::class,
                 'withSomeProperty'
             )
@@ -215,10 +214,7 @@ final class AbstractCallHandlerTest extends TestCase
             ->invoke(
                 $this->callHandler,
                 'withSomeProperty',
-                0,
-                [
-                    'some value'
-                ],
+                [],
                 $this->classMetadata
             );
     }

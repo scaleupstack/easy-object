@@ -90,20 +90,24 @@ abstract class AbstractCallHandler implements CallHandler
 
     protected function assertParameters(
         string $methodName,
-        int $expectedParameterCount,
-        array $arguments,
+        array $parameters,
         ClassMetadata $classMetadata
     )
     {
-        // TODO: Expected parameter count could be derived from @method declaration. It was checked previously in
-        //       canHandle() for exact number.
-        if ($expectedParameterCount !== count($arguments)) {
+        /** @var MethodAnnotation $methodAnnotation */
+        $methodAnnotation = $classMetadata->virtualMethodMetadata[$methodName];
+        $expectedParameterCount = count($methodAnnotation->parameters());
+
+        $givenParametetersCount = count($parameters);
+
+        if ($expectedParameterCount !== $givenParametetersCount) {
             throw new \ArgumentCountError(
                 sprintf(
-                    'Too many arguments to function %s::%s(), %d passed and exactly %d expected',
+                    'Too %s arguments to function %s::%s(), %d passed and exactly %d expected',
+                    $expectedParameterCount > $givenParametetersCount ? 'few' : 'many',
                     $classMetadata->name,
                     $methodName,
-                    count($arguments),
+                    count($parameters),
                     $expectedParameterCount
                 )
             );

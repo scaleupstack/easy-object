@@ -12,7 +12,25 @@
 
 namespace ScaleUpStack\EasyObject\Tests\Resources\Magic;
 
+/**
+ * @method someProperty()
+ * @method somePropertyWithoutDefaultValue()
+ * @method somePropertyWithExampleAnnotation()
+ * @method propertyWithWrongBuilderMethod()
+ */
 class ClassForMagicTesting
 {
     private $someProperty = 42;
+
+    private $somePropertyWithoutDefaultValue;
+
+    /**
+     * @example 'some value from @example annotation'
+     */
+    private $somePropertyWithExampleAnnotation;
+
+    /**
+     * @example new \DateTime()
+     */
+    private $propertyWithWrongBuilderMethod;
 }

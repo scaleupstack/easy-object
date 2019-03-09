@@ -16,9 +16,25 @@ use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 
 interface CallHandler
 {
+    /**
+     * Validate if the method can be handled by the CallHandler. Check for example:
+     *
+     * - Is the virtual method in the class level annotations declared with the correct number of parameters?
+     * - Does the corresponding property exist in the relevant object?
+     *
+     * @return bool
+     */
     public function canHandle(string $methodName, ClassMetadata $classMetadata) : bool;
 
     /**
+     * Do some assertions regarding the method, and execute the relevant code. For example:
+     *
+     * - Assert that the method can be handled be the CallHandler.
+     * - Assert that the provided arguments are correct according to the method's signature.
+     * - Execute the relevant code.
+     * - Assert for the correct return type.
+     * - Return the result.
+     *
      * @return mixed
      */
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata);
