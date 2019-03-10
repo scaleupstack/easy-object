@@ -27,21 +27,38 @@ final class ClassMetadataTest extends TestCase
     /**
      * @test
      * @covers ::__construct()
+     * @covers ::setNamespace()
+     * @covers ::setUseStatements()
      * @covers ::setAnnotations()
      */
     public function it_stores_metadata_for_virtual_properties_and_methods()
     {
-        // given a class name, and some Annotations with a PropertyReadAnnotation and a MethodAnnotation
+        // given a class name
         $className = ClassForTesting::class;
+        // and some use statements
+        $useStatements = [
+            'ScaleUpStack\Annotations\Annotation\MethodAnnotation',
+            'Metadata\ClassMetadata as BaseClassMetadata',
+        ];
+        // and some Annotations with a PropertyReadAnnotation and a MethodAnnotation
         $annotations = new Annotations();
         $annotations->add('property-read', 'string $someProperty', Annotations::CONTEXT_CLASS);
         $annotations->add('method', 'int getSomeProperty()', Annotations::CONTEXT_CLASS);
 
         // when creating the ClassMetadata
-        $classMetadata = new ClassMetadata($className, $annotations);
+        $classMetadata = new ClassMetadata($className, $useStatements, $annotations);
 
-        // then the annotations are stored in the ClassMetadata
-        // and the virtual properties and methods are available directly
+        // then the namespace is stored
+        $this->assertSame('ScaleUpStack\EasyObject\Tests\Resources\Metadata', $classMetadata->namespace);
+        // and the use statements are compiled
+        $this->assertSame(
+            [
+                'MethodAnnotation' => 'ScaleUpStack\Annotations\Annotation\MethodAnnotation',
+                'BaseClassMetadata' => 'Metadata\ClassMetadata',
+            ],
+            $classMetadata->useStatements
+        );
+        // and the annotations are stored while the virtual properties and methods are available directly
         $this->assertSame($annotations, $classMetadata->annotations);
         $this->assertEquals(
             [
@@ -69,7 +86,13 @@ final class ClassMetadataTest extends TestCase
         $annotations = new Annotations();
         $annotations->add('property-read', 'string $someProperty', Annotations::CONTEXT_CLASS);
         $annotations->add('method', 'int getSomeProperty()', Annotations::CONTEXT_CLASS);
-        $metadata = new ClassMetadata(ClassMetadata::class, $annotations);
+        $metadata = new ClassMetadata(
+            ClassMetadata::class,
+            [
+                Annotations::class,
+            ],
+            $annotations
+        );
 
         // when serializing and unserializing the metadata
         $unserializedMetadata = unserialize(serialize($metadata));

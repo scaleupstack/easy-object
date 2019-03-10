@@ -29,7 +29,7 @@ final class VirtualGetterTest extends TestCase
         $annotations = new Annotations();
         $annotations->add($annotationTag, $annotationArguments, Annotations::CONTEXT_CLASS);
 
-        $classMetadata = new ClassMetadata(ClassForMagicTesting::class, $annotations);
+        $classMetadata = new ClassMetadata(ClassForMagicTesting::class, [], $annotations);
 
         $classMetadata->addPropertyMetadata(
             new PropertyMetadata(

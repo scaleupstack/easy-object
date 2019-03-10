@@ -18,16 +18,57 @@ use ScaleUpStack\Annotations\Annotations;
 
 class ClassMetadata extends \Metadata\ClassMetadata
 {
+    public $namespace;
+
+    /**
+     * @var string[]
+     *      <short class names> => <fully-qualified class name>
+     */
+    public $useStatements = [];
+
     public $annotations;
 
     public $virtualPropertyMetadata = [];
 
     public $virtualMethodMetadata = [];
 
-    public function __construct(string $name, Annotations $annotations)
+    /**
+     * @param string[] $useStatements
+     */
+    public function __construct(string $name, array $useStatements, Annotations $annotations)
     {
         parent::__construct($name);
+        $this->setNamespace($name);
+        $this->setUseStatements($useStatements);
         $this->setAnnotations($annotations);
+    }
+
+    private function setNamespace(string $className)
+    {
+        $parts = explode('\\', $className);
+        array_pop($parts);
+        $this->namespace = implode('\\', $parts);
+    }
+
+    private function setUseStatements(array $useStatements)
+    {
+        foreach ($useStatements as $useStatement) {
+            $parts = explode(' ', $useStatement);
+
+            if (1 === count($parts)) {
+                $parts = explode('\\', $useStatement);
+                $className = array_pop($parts);
+                $this->useStatements[$className] = $useStatement;
+            } else if (3 === count($parts)) {
+                if ('as' !== $parts[1]) {
+                    // TODO: throw
+                }
+
+                $this->useStatements[$parts[2]] = $parts[0];
+            } else {
+                // TODO: throw
+            }
+        }
     }
 
     private function setAnnotations(Annotations $annotations)
@@ -50,6 +91,7 @@ class ClassMetadata extends \Metadata\ClassMetadata
         return serialize(
             [
                 parent::serialize(),
+                $this->useStatements,
                 $this->annotations,
             ]
         );
@@ -62,11 +104,14 @@ class ClassMetadata extends \Metadata\ClassMetadata
     {
         list(
             $parent,
+            $useStatements,
             $annotations
         ) = unserialize($str);
 
         parent::unserialize($parent);
 
+        $this->setNamespace($this->name);
+        $this->useStatements = $useStatements;
         $this->setAnnotations($annotations);
     }
 }

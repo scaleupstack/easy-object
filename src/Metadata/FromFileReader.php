@@ -38,7 +38,7 @@ final class FromFileReader extends AbstractFileDriver
         $docBlock = $reflectionClass->getDocComment() ?: '';
         $annotations = $docBlockParser->parse($docBlock, Annotations::CONTEXT_CLASS);
 
-        $classMetadata = new ClassMetadata($className, $annotations);
+        $classMetadata = new ClassMetadata($className, [], $annotations);
 
         return $classMetadata;
     }
