@@ -31,7 +31,7 @@ final class ClassMetadataTest extends TestCase
      * @covers ::setUseStatements()
      * @covers ::setAnnotations()
      */
-    public function it_stores_metadata_for_virtual_properties_and_methods()
+    public function it_stores_metadata_for_virtual_methods()
     {
         // given a class name
         $className = ClassForTesting::class;
@@ -42,8 +42,8 @@ final class ClassMetadataTest extends TestCase
         ];
         // and some Annotations with a PropertyReadAnnotation and a MethodAnnotation
         $annotations = new Annotations();
-        $annotations->add('property-read', 'string $someProperty', Annotations::CONTEXT_CLASS);
-        $annotations->add('method', 'int getSomeProperty()', Annotations::CONTEXT_CLASS);
+        $annotations->add('property-read', 'ClassForTesting $someProperty', Annotations::CONTEXT_CLASS);
+        $annotations->add('method', 'BaseClassMetadata[] getSomeProperty()', Annotations::CONTEXT_CLASS);
 
         // when creating the ClassMetadata
         $classMetadata = new ClassMetadata($className, $useStatements, $annotations);
@@ -58,18 +58,12 @@ final class ClassMetadataTest extends TestCase
             ],
             $classMetadata->useStatements
         );
-        // and the annotations are stored while the virtual properties and methods are available directly
+        // and the annotations are stored while the virtual methods are available directly
         $this->assertSame($annotations, $classMetadata->annotations);
-        $this->assertEquals(
-            [
-                'someProperty' => new PropertyReadAnnotation('property-read', 'string $someProperty'),
-            ],
-            $classMetadata->virtualPropertyMetadata
-        );
 
         $this->assertEquals(
             [
-                'getSomeProperty' => new MethodAnnotation('method', 'int getSomeProperty()'),
+                'getSomeProperty' => new MethodAnnotation('method', 'BaseClassMetadata[] getSomeProperty()'),
             ],
             $classMetadata->virtualMethodMetadata
         );

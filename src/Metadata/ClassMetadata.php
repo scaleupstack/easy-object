@@ -28,8 +28,6 @@ class ClassMetadata extends \Metadata\ClassMetadata
 
     public $annotations;
 
-    public $virtualPropertyMetadata = [];
-
     public $virtualMethodMetadata = [];
 
     /**
@@ -74,11 +72,6 @@ class ClassMetadata extends \Metadata\ClassMetadata
     private function setAnnotations(Annotations $annotations)
     {
         $this->annotations = $annotations;
-
-        /** @var PropertyReadAnnotation $readPropertyAnnotation */
-        foreach ($annotations->annotationsByTag('property-read') as $readPropertyAnnotation) {
-            $this->virtualPropertyMetadata[$readPropertyAnnotation->propertyName()] = $readPropertyAnnotation;
-        }
 
         /** @var MethodAnnotation $methodAnnotation */
         foreach ($annotations->annotationsByTag('method') as $methodAnnotation) {
