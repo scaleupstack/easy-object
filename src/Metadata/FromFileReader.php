@@ -35,12 +35,35 @@ final class FromFileReader extends AbstractFileDriver
     {
         $className = $reflectionClass->getName();
 
+        $useStatements = $this->parseUseStatements($reflectionClass);
+
         $docBlock = $reflectionClass->getDocComment() ?: '';
         $annotations = $docBlockParser->parse($docBlock, Annotations::CONTEXT_CLASS);
 
-        $classMetadata = new ClassMetadata($className, [], $annotations);
+        return new ClassMetadata($className, $useStatements, $annotations);
+    }
 
-        return $classMetadata;
+    private function parseUseStatements(\ReflectionClass $reflectionClass) : array
+    {
+        $useStatements = [];
+        $lines = file($reflectionClass->getFileName());
+
+        $pattern = "/^use (.*);$/";
+        foreach ($lines as $line) {
+            $count = preg_match(
+                $pattern,
+                rtrim($line),
+                $matches
+            );
+
+            if (1 !== $count) {
+                continue;
+            }
+
+            $useStatements[] = $matches[1];
+        }
+
+        return $useStatements;
     }
 
     private function extractPropertyLevelMetadata(

@@ -48,6 +48,7 @@ final class FromFileReaderTest extends TestCase
      * @covers ::getExtension()
      * @covers ::loadMetadataFromFile()
      * @covers ::extractClassLevelMetadata()
+     * @covers ::parseUseStatements()
      */
     public function it_analyzes_class_level_metadata()
     {
@@ -59,12 +60,23 @@ final class FromFileReaderTest extends TestCase
         /** @var ClassMetadata $classMetadata */
         $classMetadata = $hierarchyMetadata->classMetadata[$className];
 
-        // then the class name, the virtual methods, and the virtual properties are available
+        // then the class name, and the namespace are available
         $this->assertSame(
             $className,
             $classMetadata->name
         );
+        $this->assertSame('ScaleUpStack\EasyObject\Tests\Resources\Metadata', $classMetadata->namespace);
 
+        // and the use statements are compiled
+        $this->assertSame(
+            [
+                'ClassMetadata' => 'ScaleUpStack\EasyObject\Metadata\ClassMetadata',
+                'BaseClassMetadata' => 'Metadata\ClassMetadata',
+            ],
+            $classMetadata->useStatements
+        );
+
+        //and the virtual methods and the virtual properties are available
         $this->assertEquals(
             $classMetadata->virtualPropertyMetadata,
             [
