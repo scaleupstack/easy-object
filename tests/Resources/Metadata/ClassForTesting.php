@@ -12,6 +12,9 @@
 
 namespace ScaleUpStack\EasyObject\Tests\Resources\Metadata;
 
+use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use Metadata\ClassMetadata as BaseClassMetadata;
+
 /**
  * @property-read $firstProperty
  * @method string secondProperty()
@@ -30,6 +33,26 @@ class ClassForTesting
     private $secondProperty = 42;
 
     private $thirdProperty = [];
+
+    /**
+     * @var \DateTime
+     */
+    private $globalNamespacedType;
+
+    /**
+     * @var ClassMetadata
+     */
+    private $typeImportedViaUse;
+
+    /**
+     * @var ClassForTesting
+     */
+    private $typeInSameNamespace;
+
+    /**
+     * @var BaseClassMetadata
+     */
+    private $typeRenamedViaUse;
 
     public function __call($name, $arguments)
     {

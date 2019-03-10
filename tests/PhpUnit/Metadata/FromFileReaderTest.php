@@ -96,17 +96,41 @@ final class FromFileReaderTest extends TestCase
         $classMetadata = $hierarchyMetadata->classMetadata[$className];
 
         // then the properties' metadata is available
-        $firstPropertyAnnotations = new Annotations();
-        $firstPropertyAnnotations->add('var', 'string', Annotations::CONTEXT_PROPERTY);
-        $secondPropertyAnnotations = new Annotations();
-        $secondPropertyAnnotations->add('var', 'int', Annotations::CONTEXT_PROPERTY);
-        $thirdPropertyAnnotations = new Annotations();
+        $firstProperty = new PropertyMetadata($className, 'firstProperty', new Annotations());
+        $firstProperty->annotations
+            ->add('var', 'string', Annotations::CONTEXT_PROPERTY);
+
+        $secondProperty = new PropertyMetadata($className, 'secondProperty', new Annotations());
+        $secondProperty->annotations
+            ->add('var', 'int', Annotations::CONTEXT_PROPERTY);
+
+        $thirdProperty = new PropertyMetadata($className, 'thirdProperty', new Annotations());
+
+        $globalNamespacedType = new PropertyMetadata($className, 'globalNamespacedType', new Annotations());
+        $globalNamespacedType->annotations
+            ->add('var','\DateTime', Annotations::CONTEXT_PROPERTY);
+
+        $typeImportedViaUse = new PropertyMetadata($className, 'typeImportedViaUse', new Annotations());
+        $typeImportedViaUse->annotations
+            ->add('var', 'ClassMetadata', Annotations::CONTEXT_PROPERTY);
+
+        $typeInSameNamespace = new PropertyMetadata($className, 'typeInSameNamespace', new Annotations());
+        $typeInSameNamespace->annotations
+            ->add('var', 'ClassForTesting', Annotations::CONTEXT_PROPERTY);
+
+        $typeRenamedViaUse = new PropertyMetadata($className, 'typeRenamedViaUse', new Annotations());
+        $typeRenamedViaUse->annotations
+            ->add('var', 'BaseClassMetadata', Annotations::CONTEXT_PROPERTY);
 
         $this->assertEquals(
             [
-                'firstProperty' => new PropertyMetadata($className, 'firstProperty', $firstPropertyAnnotations),
-                'secondProperty' => new PropertyMetadata($className, 'secondProperty', $secondPropertyAnnotations),
-                'thirdProperty' => new PropertyMetadata($className, 'thirdProperty', $thirdPropertyAnnotations),
+                'firstProperty' => $firstProperty,
+                'secondProperty' => $secondProperty,
+                'thirdProperty' => $thirdProperty,
+                'globalNamespacedType' => $globalNamespacedType,
+                'typeImportedViaUse' => $typeImportedViaUse,
+                'typeInSameNamespace' => $typeInSameNamespace,
+                'typeRenamedViaUse' => $typeRenamedViaUse,
             ],
             $classMetadata->propertyMetadata
         );
