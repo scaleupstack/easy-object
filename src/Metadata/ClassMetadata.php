@@ -86,6 +86,47 @@ class ClassMetadata extends \Metadata\ClassMetadata
         }
     }
 
+    public function fullyQualifiedDataTypeSpecification(string $originalSpecification) : string
+    {
+        $specifications = explode('|', $originalSpecification);
+
+        foreach ($specifications as $key => $specification) {
+            $isTypedArray = false;
+            if ('[]' === substr($specification, -2)) {
+                $isTypedArray = true;
+                $specification = substr($specification, 0, -2);
+            }
+
+            if ('\\' === substr($specification, 0, 1)) {
+                // data type is provided as absolute namespace
+                $specification = substr($specification, 1);
+            } else {
+                if (array_key_exists($specification, $this->useStatements)) {
+                    // from use statements
+                    $specification = $this->useStatements[$specification];
+                } else {
+                    $inNamespaceClassName = sprintf(
+                        '%s\\%s',
+                        $this->namespace,
+                        $specification
+                    );
+                    if (class_exists($inNamespaceClassName)) {
+                        // data type is class in current namespace
+                        $specification = $inNamespaceClassName;
+                    }
+                }
+            }
+
+            if ($isTypedArray) {
+                $specification = $specification . '[]';
+            }
+
+            $specifications[$key] = $specification;
+        }
+
+        return implode('|', $specifications);
+    }
+
     public function serialize() : string
     {
         return serialize(

@@ -100,5 +100,51 @@ final class ClassMetadataTest extends TestCase
         // then the both instances are equal
         $this->assertEquals($metadata, $unserializedMetadata);
     }
+
+    public function provides_short_and_fully_qualified_data_type_specifications() : array
+    {
+        return [
+            ['int', 'int'],
+            ['bool', 'bool'],
+            ['\DateTime', 'DateTime'],
+            ['ClassMetadata', 'ScaleUpStack\EasyObject\Metadata\ClassMetadata'],
+            ['BaseClassMetadata', 'Metadata\ClassMetadata'],
+            ['ClassForTesting', 'ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting'],
+
+            ['int[]', 'int[]'],
+            ['\DateTime[]', 'DateTime[]'],
+            ['ClassMetadata[]', 'ScaleUpStack\EasyObject\Metadata\ClassMetadata[]'],
+
+            ['int[]|\DateTime', 'int[]|DateTime'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provides_short_and_fully_qualified_data_type_specifications
+     * @covers ::fullyQualifiedDataTypeSpecification()
+     */
+    public function it_transforms_a_data_type_specification_into_a_fully_qualified_specification(
+        string $shortSpecification,
+        string $expectedLongSpecification
+    )
+    {
+        // given a ClassMetadata
+        $classMetadata = new ClassMetadata(
+            ClassForTesting::class,
+            [
+                'ScaleUpStack\EasyObject\Metadata\ClassMetadata',
+                'Metadata\ClassMetadata as BaseClassMetadata',
+            ],
+            new Annotations()
+        );
+        // and a data type specification as provided by the test's parameter
+
+        // when transforming the short data type specification
+        $longSpecification = $classMetadata->fullyQualifiedDataTypeSpecification($shortSpecification);
+
+        // then the specification was transformed to a fully qualified data type specification
+        $this->assertSame($expectedLongSpecification, $longSpecification);
+    }
 }
 

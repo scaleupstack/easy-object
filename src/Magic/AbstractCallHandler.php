@@ -127,7 +127,6 @@ abstract class AbstractCallHandler implements CallHandler
         $virtualMethodAnnotation = $classMetadata->virtualMethodMetadata[$methodName];
         $returnType = $virtualMethodAnnotation->returnType();
 
-
         if (! is_null($returnType)) {
             $dataType = new DataTypeMetadata($returnType);
             $isTypeValid = $dataType->validateVariable($returnValue, $object);
