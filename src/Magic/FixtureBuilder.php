@@ -85,11 +85,28 @@ final class FixtureBuilder extends AbstractCallHandler
 
                 // TODO: throw if no example or too many or ...
 
-                // TODO: ExampleAnnoation
+                // TODO: ExampleAnnotation
                 /** @var UnknownAnnotation $exampleAnnotation */
                 $exampleAnnotation = $exampleAnnotations[0];
+                $phpTemplate = <<<EVAL_CODE
+namespace %s {
+%s
+    return %s;
+}
+EVAL_CODE;
+
+                $useStatements = [];
+                foreach ($toBeBuildClassMetadata->useStatements as $alias => $fullyQualified) {
+                    $useStatements[] = sprintf(
+                        "    use %s as %s;\n",
+                        $fullyQualified,
+                        $alias
+                    );
+                }
                 $phpString = sprintf(
-                    'return %s;',
+                    $phpTemplate,
+                    $toBeBuildClassMetadata->namespace,
+                    implode("", $useStatements),
                     $exampleAnnotation->arguments()
                 );
 

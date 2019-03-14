@@ -13,8 +13,6 @@
 namespace ScaleUpStack\EasyObject\Tests\Resources\Magic;
 
 /**
- * TODO: shortend return type for build()
- *
  * @method self withSomeProperty($someProperty)
  * @method self withSomePropertyWithoutDefaultValue($newValue)
  * @method self withUnknownProperty($unknownProperty)

@@ -12,6 +12,7 @@
 
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
+use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Assert;
 use ScaleUpStack\EasyObject\Magic\FixtureBuilder;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
@@ -195,7 +196,7 @@ final class FixtureBuilderTest extends TestCase
             Reflection::getPropertyValue($object, 'somePropertyWithExampleAnnotation')
         );
         $this->assertInstanceOf(
-            \DateTime::class,
+            Annotations::class,
             Reflection::getPropertyValue($object, 'propertyWithWrongBuilderMethod')
         );
     }

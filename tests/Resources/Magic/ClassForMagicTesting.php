@@ -11,6 +11,7 @@
  */
 
 namespace ScaleUpStack\EasyObject\Tests\Resources\Magic;
+use ScaleUpStack\Annotations\Annotations;
 
 /**
  * @method someProperty()
@@ -30,7 +31,7 @@ class ClassForMagicTesting
     private $somePropertyWithExampleAnnotation;
 
     /**
-     * @example new \DateTime()
+     * @example new Annotations()
      */
     private $propertyWithWrongBuilderMethod;
 }
