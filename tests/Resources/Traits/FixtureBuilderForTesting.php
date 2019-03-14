@@ -13,11 +13,10 @@
 namespace ScaleUpStack\EasyObject\Tests\Resources\Traits;
 
 use ScaleUpStack\EasyObject\Traits\FixtureBuilderTrait;
-use ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting;
 
 /**
  * @method self withSomeProperty(int $someProperty)
- * @method ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting build()
+ * @method EntityForTesting build()
  */
 final class FixtureBuilderForTesting
 {

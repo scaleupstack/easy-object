@@ -12,10 +12,11 @@
 
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Metadata;
 
-use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
-use ScaleUpStack\Annotations\Annotation\PropertyReadAnnotation;
 use ScaleUpStack\Annotations\Annotations;
+use ScaleUpStack\EasyObject\InvalidArgumentException;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
+use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
@@ -29,7 +30,7 @@ final class ClassMetadataTest extends TestCase
      * @covers ::__construct()
      * @covers ::setNamespace()
      * @covers ::setUseStatements()
-     * @covers ::setAnnotations()
+     * @covers ::setVirtualMethods()
      */
     public function it_stores_metadata_for_virtual_methods()
     {
@@ -44,6 +45,7 @@ final class ClassMetadataTest extends TestCase
         $annotations = new Annotations();
         $annotations->add('property-read', 'ClassForTesting $someProperty', Annotations::CONTEXT_CLASS);
         $annotations->add('method', 'BaseClassMetadata[] getSomeProperty()', Annotations::CONTEXT_CLASS);
+        $annotations->add('method', 'self withSomeProperty(MethodAnnotation $someValue)', Annotations::CONTEXT_CLASS);
 
         // when creating the ClassMetadata
         $classMetadata = new ClassMetadata($className, $useStatements, $annotations);
@@ -63,10 +65,43 @@ final class ClassMetadataTest extends TestCase
 
         $this->assertEquals(
             [
-                'getSomeProperty' => new MethodAnnotation('method', 'BaseClassMetadata[] getSomeProperty()'),
+                'getSomeProperty' => new VirtualMethodMetadata(
+                    $className,
+                    'getSomeProperty',
+                    [],
+                    new DataTypeMetadata('Metadata\ClassMetadata[]')
+                ),
+                'withSomeProperty' => new VirtualMethodMetadata(
+                    $className,
+                    'withSomeProperty',
+                    [
+                        'someValue' => new DataTypeMetadata('ScaleUpStack\Annotations\Annotation\MethodAnnotation'),
+                    ],
+                    new DataTypeMetadata('self')
+                ),
             ],
-            $classMetadata->virtualMethodMetadata
+            $classMetadata->virtualMethods
         );
+    }
+
+    /**
+     * @test
+     * @covers ::setVirtualMethods()
+     */
+    public function it_does_not_allow_default_values_in_virtual_methods()
+    {
+        // given a class name
+        $className = ClassForTesting::class;
+        // and some Annotations with a MethodAnnotation that has a default value
+        $annotations = new Annotations();
+        $annotations->add('method', 'getSomeProperty($someParameter = null)', Annotations::CONTEXT_CLASS);
+
+        // when creating the ClassMetadata
+        // then an exception is thrown
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Currently, default values are not supported in virtual methods.');
+
+        new ClassMetadata($className, [], $annotations);
     }
 
     /**
@@ -98,6 +133,7 @@ final class ClassMetadataTest extends TestCase
     public function provides_short_and_fully_qualified_data_type_specifications() : array
     {
         return [
+            [null, null],
             ['int', 'int'],
             ['bool', 'bool'],
             ['\DateTime', 'DateTime'],
@@ -119,8 +155,8 @@ final class ClassMetadataTest extends TestCase
      * @covers ::fullyQualifiedDataTypeSpecification()
      */
     public function it_transforms_a_data_type_specification_into_a_fully_qualified_specification(
-        string $shortSpecification,
-        string $expectedLongSpecification
+        ?string $shortSpecification,
+        ?string $expectedLongSpecification
     )
     {
         // given a ClassMetadata

@@ -12,7 +12,6 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
 use ScaleUpStack\Annotations\Annotation\UnknownAnnotation;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
 use ScaleUpStack\EasyObject\Metadata\Factory;
@@ -125,9 +124,8 @@ final class FixtureBuilder extends AbstractCallHandler
     private function getMetadataOfClassToBeBuilt(ClassMetadata $classMetadata) : ?ClassMetadata
     {
         // get name of class to be built
-        /** @var MethodAnnotation $virtualBuildMethod */
-        $virtualBuildMethod = $classMetadata->virtualMethodMetadata['build'];
-        $buildClassName = $virtualBuildMethod->returnType();
+        $virtualBuildMethod = $classMetadata->virtualMethods['build'];
+        $buildClassName = $virtualBuildMethod->returnType->declaration();
 
         if (is_null($buildClassName)) {
             return null;

@@ -13,12 +13,12 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Metadata;
 
 use Metadata\MetadataFactory;
-use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
-use ScaleUpStack\Annotations\Annotation\PropertyReadAnnotation;
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
 use ScaleUpStack\EasyObject\Metadata\FromFileReader;
 use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
+use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\Metadata\ClassForTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 
@@ -78,10 +78,20 @@ final class FromFileReaderTest extends TestCase
 
         //and the virtual methods are available
         $this->assertEquals(
-            $classMetadata->virtualMethodMetadata,
+            $classMetadata->virtualMethods,
             [
-                 'secondProperty' => new MethodAnnotation('method', 'string secondProperty()'),
-                 'getThirdProperty' => new MethodAnnotation('method', 'string getThirdProperty()'),
+                 'secondProperty' => new VirtualMethodMetadata(
+                     $className,
+                     'secondProperty',
+                     [],
+                     new DataTypeMetadata('string')
+                 ),
+                 'getThirdProperty' => new VirtualMethodMetadata(
+                     $className,
+                     'getThirdProperty',
+                     [],
+                     new DataTypeMetadata('string')
+                 ),
             ]
         );
     }

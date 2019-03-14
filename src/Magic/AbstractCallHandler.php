@@ -12,9 +12,8 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\Annotations\Annotation\MethodAnnotation;
 use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
+use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 
 abstract class AbstractCallHandler implements CallHandler
 {
@@ -24,7 +23,7 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        $virtualMethods = $classMetadata->virtualMethodMetadata;
+        $virtualMethods = $classMetadata->virtualMethods;
 
         // check for corresponding @method annotation
         if (! array_key_exists($methodName, $virtualMethods)) {
@@ -32,10 +31,9 @@ abstract class AbstractCallHandler implements CallHandler
         }
 
         // check for expected number of parameters
-        /** @var MethodAnnotation $methodMetadata */
         $methodMetadata = $virtualMethods[$methodName];
 
-        if ($expectedNumberOfParameters !== count($methodMetadata->parameters())) {
+        if ($expectedNumberOfParameters !== count($methodMetadata->paramters)) {
             return false;
         }
 
@@ -94,9 +92,8 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        /** @var MethodAnnotation $methodAnnotation */
-        $methodAnnotation = $classMetadata->virtualMethodMetadata[$methodName];
-        $expectedParameterCount = count($methodAnnotation->parameters());
+        $methodMetadata = $classMetadata->virtualMethods[$methodName];
+        $expectedParameterCount = count($methodMetadata->paramters);
 
         $givenParametetersCount = count($parameters);
 
@@ -123,13 +120,11 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        /** @var MethodAnnotation $virtualMethodAnnotation */
-        $virtualMethodAnnotation = $classMetadata->virtualMethodMetadata[$methodName];
-        $returnType = $virtualMethodAnnotation->returnType();
+        $virtualMethodMetadata = $classMetadata->virtualMethods[$methodName];
+        $returnType = $virtualMethodMetadata->returnType;
 
-        if (! is_null($returnType)) {
-            $dataType = new DataTypeMetadata($returnType);
-            $isTypeValid = $dataType->validateVariable($returnValue, $object);
+        if (! is_null($returnType->declaration())) {
+            $isTypeValid = $returnType->validateVariable($returnValue, $object);
 
             if (! $isTypeValid) {
                 // TODO: Handle error on strict_types declaration of calling context (not file defining the class) :-/
@@ -139,7 +134,7 @@ abstract class AbstractCallHandler implements CallHandler
                         'Return value of %s::%s() must be of the type %s, %s returned',
                         $classMetadata->name,
                         $methodName,
-                        $returnType,
+                        $returnType->declaration(),
                         gettype($returnValue)
                     )
                 );

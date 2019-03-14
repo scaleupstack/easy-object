@@ -16,12 +16,24 @@ use ScaleUpStack\EasyObject\Assert;
 
 final class VirtualMethodMetadata
 {
+    /**
+     * @var string
+     */
     public $class;
 
+    /**
+     * @var string
+     */
     public $name;
 
+    /**
+     * @var DataTypeMetadata[]
+     */
     public $paramters = [];
 
+    /**
+     * @var DataTypeMetadata
+     */
     public $returnType;
 
     /**

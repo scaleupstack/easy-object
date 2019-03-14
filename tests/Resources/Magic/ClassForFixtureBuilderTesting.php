@@ -19,7 +19,7 @@ namespace ScaleUpStack\EasyObject\Tests\Resources\Magic;
  * @method self withSomePropertyWithoutDefaultValue($newValue)
  * @method self withUnknownProperty($unknownProperty)
  * @method self withPropertyWithWrongBuilderMethod()
- * @method ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting build()
+ * @method ClassForMagicTesting build()
  */
 final class ClassForFixtureBuilderTesting
 {
