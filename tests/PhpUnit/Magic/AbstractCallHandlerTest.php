@@ -13,10 +13,9 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\EasyObject\Magic\AbstractCallHandler;
-use ScaleUpStack\EasyObject\Metadata\Factory;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForAbstractCallHandlerTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
-use ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting;
+use ScaleUpStack\Metadata\Factory;
 use ScaleUpStack\Reflection\Reflection;
 
 /**

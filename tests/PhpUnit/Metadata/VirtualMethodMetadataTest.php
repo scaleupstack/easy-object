@@ -12,9 +12,9 @@
 
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Metadata;
 
-use ScaleUpStack\EasyObject\Metadata\DataTypeMetadata;
 use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
+use ScaleUpStack\Metadata\Metadata\DataTypeMetadata;
 
 /**
  * @coversDefaultClass \ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata

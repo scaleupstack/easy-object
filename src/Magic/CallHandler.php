@@ -12,7 +12,7 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 
 interface CallHandler
 {

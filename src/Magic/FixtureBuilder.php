@@ -13,9 +13,9 @@
 namespace ScaleUpStack\EasyObject\Magic;
 
 use ScaleUpStack\Annotations\Annotation\UnknownAnnotation;
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Metadata\Factory;
-use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
+use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
 use ScaleUpStack\Reflection\Reflection;
 
 final class FixtureBuilder extends AbstractCallHandler

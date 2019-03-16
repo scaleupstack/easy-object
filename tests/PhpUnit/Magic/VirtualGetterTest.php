@@ -14,10 +14,10 @@ namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Magic\VirtualGetter;
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Metadata\PropertyMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
 
 /**
  * @coversDefaultClass \ScaleUpStack\EasyObject\Magic\VirtualGetter

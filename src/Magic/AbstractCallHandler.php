@@ -12,8 +12,8 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\VirtualMethodMetadata;
 
 abstract class AbstractCallHandler implements CallHandler
 {

@@ -12,7 +12,7 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Reflection\Reflection;
 
 final class VirtualGetter extends AbstractCallHandler

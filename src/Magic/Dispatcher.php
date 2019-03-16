@@ -12,11 +12,8 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use Metadata\MetadataFactory;
-use ScaleUpStack\EasyObject\Metadata\ClassMetadata;
-use ScaleUpStack\EasyObject\Metadata\Factory;
-use ScaleUpStack\EasyObject\Metadata\FileLocator;
-use ScaleUpStack\EasyObject\Metadata\FromFileReader;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Factory;
 
 final class Dispatcher
 {
@@ -26,22 +23,12 @@ final class Dispatcher
     private static $instance;
 
     /**
-     * @var MetadataFactory
-     */
-    private $metadataFactory;
-
-    /**
      * @var CallHandler[]
      */
     private $callHandlers = [];
 
     private function __construct()
     {
-        $this->metadataFactory = new MetadataFactory(
-            new FromFileReader(
-                new FileLocator()
-            )
-        );
     }
 
     private static function instance() : self

@@ -13,6 +13,7 @@
 namespace ScaleUpStack\EasyObject\Metadata;
 
 use ScaleUpStack\EasyObject\Assert;
+use ScaleUpStack\Metadata\Metadata\DataTypeMetadata;
 
 final class VirtualMethodMetadata
 {
