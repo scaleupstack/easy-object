@@ -1,5 +1,7 @@
 <?php declare(strict_types = 1);
 
+namespace ScaleUpStack\EasyObject\Tests;
+
 /**
  * This file is part of ScaleUpStack/EasyObject.
  *
@@ -10,4 +12,10 @@
  * @link      https://github.com/scaleupstack/easy-object
  */
 
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
+use ScaleUpStack\Metadata\Configuration;
+
 require_once __DIR__ . '/../vendor/autoload.php';
+
+// register FeatureAnalyzers in ScaleUpStack\Metadata\Configuration
+Configuration::registerFeatureAnalyzer(new VirtualMethods());
