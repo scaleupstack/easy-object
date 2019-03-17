@@ -12,8 +12,8 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
-use ScaleUpStack\Metadata\Metadata\VirtualMethodMetadata;
 
 abstract class AbstractCallHandler implements CallHandler
 {
@@ -23,7 +23,7 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        $virtualMethods = $classMetadata->virtualMethods;
+        $virtualMethods = $classMetadata->features[VirtualMethods::FEATURES_KEY];
 
         // check for corresponding @method annotation
         if (! array_key_exists($methodName, $virtualMethods)) {
@@ -92,7 +92,7 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        $methodMetadata = $classMetadata->virtualMethods[$methodName];
+        $methodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
         $expectedParameterCount = count($methodMetadata->paramters);
 
         $givenParametetersCount = count($parameters);
@@ -120,7 +120,7 @@ abstract class AbstractCallHandler implements CallHandler
         ClassMetadata $classMetadata
     )
     {
-        $virtualMethodMetadata = $classMetadata->virtualMethods[$methodName];
+        $virtualMethodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
         $returnType = $virtualMethodMetadata->returnType;
 
         if (! is_null($returnType->declaration())) {

@@ -14,6 +14,7 @@ namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Assert;
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\EasyObject\Magic\FixtureBuilder;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForFixtureBuilderTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
@@ -74,8 +75,9 @@ final class FixtureBuilderTest extends TestCase
         $methodName = 'withSomeProperty';
         Assert::true($callHandler->canHandle($methodName, $classMetadata));
         // but the ClassMetadata has no build() method
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = clone $classMetadata;
-        unset($classMetadata->virtualMethods['build']);
+        unset($classMetadata->features[VirtualMethods::FEATURES_KEY]['build']);
 
         // when checking if the handler can handle a with method
         $result = $callHandler->canHandle($methodName, $classMetadata);
@@ -102,9 +104,10 @@ final class FixtureBuilderTest extends TestCase
         Assert::true($callHandler->canHandle($methodName, $classMetadata));
         // but the ClassMetadata's build() method has no return type
         $classMetadata = clone $classMetadata;
-        $classMetadata->virtualMethods['build'] = clone $classMetadata->virtualMethods['build'];
+        $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'] =
+            clone $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'];
         Reflection::setPropertyValue(
-            $classMetadata->virtualMethods['build'],
+            $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'],
             'returnType',
             new DataTypeMetadata(null)
         );

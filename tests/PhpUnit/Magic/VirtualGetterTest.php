@@ -13,6 +13,7 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\Annotations\Annotations;
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
@@ -29,7 +30,9 @@ final class VirtualGetterTest extends TestCase
         $annotations = new Annotations();
         $annotations->add($annotationTag, $annotationArguments, Annotations::CONTEXT_CLASS);
 
+        $analyzer = new VirtualMethods();
         $classMetadata = new ClassMetadata(ClassForMagicTesting::class, [], $annotations);
+        $classMetadata->features[VirtualMethods::FEATURES_KEY] = $analyzer->extractMetadata($classMetadata);
 
         $classMetadata->addPropertyMetadata(
             new PropertyMetadata(

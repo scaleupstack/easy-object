@@ -13,6 +13,7 @@
 namespace ScaleUpStack\EasyObject\Magic;
 
 use ScaleUpStack\Annotations\Annotation\UnknownAnnotation;
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Factory;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
@@ -141,7 +142,7 @@ EVAL_CODE;
     private function getMetadataOfClassToBeBuilt(ClassMetadata $classMetadata) : ?ClassMetadata
     {
         // get name of class to be built
-        $virtualBuildMethod = $classMetadata->virtualMethods['build'];
+        $virtualBuildMethod = $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'];
         $buildClassName = $virtualBuildMethod->returnType->declaration();
 
         if (is_null($buildClassName)) {
