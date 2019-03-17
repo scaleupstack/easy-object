@@ -12,7 +12,9 @@
 
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\FeatureAnalyzers;
 
+use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
+use ScaleUpStack\EasyObject\InvalidArgumentException;
 use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 use ScaleUpStack\EasyObject\Tests\Resources\ClassForVirtualMethodsTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
@@ -60,5 +62,26 @@ final class VirtualMethodsTest extends TestCase
             ],
             $classMetadata->features[VirtualMethods::FEATURES_KEY]
         );
+    }
+
+    /**
+     * @test
+     * @covers ::extractMetadata()
+     */
+    public function it_throws_an_exception_if_virtual_method_has_a_parameter_with_default_value()
+    {
+        // given some ClassMetadata with a virtual method annotation that has a default value for a parameter
+        $annotations = new Annotations();
+        $annotations->add('method', 'someMethod($parameter = "defaultValue")', Annotations::CONTEXT_CLASS);
+        $classMetadata = new ClassMetadata('SomeClassName', [], $annotations);
+        // and a VirtualMethods feature analyzer
+        $analyzer = new VirtualMethods();
+
+        // when extracting the metadata
+        // then an exception is thrown
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Currently, default values are not supported in virtual methods.');
+
+        $analyzer->extractMetadata($classMetadata);
     }
 }

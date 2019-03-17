@@ -12,6 +12,23 @@
 
 namespace ScaleUpStack\EasyObject\Tests\Resources;
 
+use ScaleUpStack\Metadata\Configuration;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * Copied from ScaleUpStack\Metadata\Generator\FromFileReader::analyzeRegisteredFeatures()
+     */
+    protected function analyzeFeatures(ClassMetadata $classMetadata)
+    {
+        $featureAnalyzers = Configuration::featureAnalyzers();
+
+        foreach ($featureAnalyzers as $analyzer) {
+            $key = $analyzer->name();
+            $metadata =  $analyzer->extractMetadata($classMetadata);
+
+            $classMetadata->features[$key] = $metadata;
+        }
+    }
 }
