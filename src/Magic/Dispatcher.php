@@ -52,23 +52,59 @@ final class Dispatcher
         array $prioritizedCallHandlerClassNames
     )
     {
+        return self::doInvocation($object, $methodName, $arguments, $prioritizedCallHandlerClassNames, false);
+    }
+
+    public static function invokeStatically(
+        string $className,
+        string $methodName,
+        array $arguments,
+        array $prioritizedCallHandlerClassNames
+    )
+    {
+        return self::doInvocation($className, $methodName, $arguments, $prioritizedCallHandlerClassNames, true);
+    }
+
+    private static function doInvocation(
+        $objectOrClassName,
+        string $methodName,
+        array $arguments,
+        array $prioritizedCallHandlerClassNames,
+        bool $isStatic
+    )
+    {
         $instance = self::instance();
 
-        $classMetadata = $instance->classMetadata(
-            get_class($object)
-        );
+        $className = $isStatic ? $objectOrClassName : get_class($objectOrClassName);
+        $classMetadata = $instance->classMetadata($className);
 
-        foreach ($prioritizedCallHandlerClassNames as $callHandlerClassName) {
+        foreach ($prioritizedCallHandlerClassNames as $callHandlerData) {
+            // prepare $callHandlerClassName and $options
+            if (is_array($callHandlerData)) {
+                $callHandlerClassName = $callHandlerData[0];
+                $options = $callHandlerData[1];
+            } else {
+                $callHandlerClassName = $callHandlerData;
+                $options = [];
+            }
+
+            // retrieve $callHandler
             if (! array_key_exists($callHandlerClassName, $instance->callHandlers)) {
                 $instance->callHandlers[$callHandlerClassName] = new $callHandlerClassName();
             }
 
             $callHandler = $instance->callHandlers[$callHandlerClassName];
 
-            if ($callHandler->canHandle($methodName, $classMetadata, [])) {
-                $return = $callHandler->execute($object, $methodName, $arguments, $classMetadata);
+            // execute
+            if ($callHandler->canHandle($methodName, $classMetadata, $options)) {
+                if (! $isStatic) {
+                    $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
+                } else {
+                    $return = $callHandler->executeStatic($objectOrClassName, $methodName, $arguments, $classMetadata);
+                }
 
-                $instance->assertReturnType($object, $methodName, $return, $classMetadata);
+                $instance->assertReturnType($objectOrClassName, $methodName, $return, $classMetadata);
+
                 return $return;
             }
         }
@@ -88,8 +124,11 @@ final class Dispatcher
             ->classMetadata[$className];
     }
 
+    /**
+     * @param object|string $objectContext
+     */
     private function assertReturnType(
-        object $object,
+        $objectContext,
         string $methodName,
         $returnValue,
         ClassMetadata $classMetadata
@@ -100,7 +139,7 @@ final class Dispatcher
         $returnType = $virtualMethodMetadata->returnType;
 
         if (! is_null($returnType->declaration())) {
-            $isTypeValid = $returnType->validateVariable($returnValue, $object);
+            $isTypeValid = $returnType->validateVariable($returnValue, $objectContext);
 
             if (! $isTypeValid) {
                 // TODO: Handle error on strict_types declaration of calling context (not file defining the class) :-/

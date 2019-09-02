@@ -40,4 +40,11 @@ interface CallHandler
      * @return mixed
      */
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata);
+
+    /**
+     * Executes a static method on a given class (name).
+     *
+     * Cf. self::execute()
+     */
+    public function executeStatic(string $className, string $methodName, array $arguments, ClassMetadata $classMetadata);
 }

@@ -13,6 +13,7 @@
 namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\EasyObject\Magic\Dispatcher;
+use ScaleUpStack\EasyObject\Magic\NamedConstructor;
 use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForDispatcherTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
@@ -29,9 +30,10 @@ final class DispatcherTest extends TestCase
      * @covers ::__construct()
      * @covers ::classMetadata()
      * @covers ::invoke()
+     * @covers ::doInvocation()
      * @covers ::assertReturnType()
      */
-    public function it_invokes_a_virtual_method_on_some_object_via_some_call_handler()
+    public function it_invokes_a_virtual_non_static_method_on_some_object_via_some_call_handler()
     {
         // given an object, and a list of supported call handlers
         $object = new ClassForDispatcherTesting();
@@ -49,6 +51,42 @@ final class DispatcherTest extends TestCase
 
         // then the result is as expected
         $this->assertSame(42, $result);
+    }
+
+    /**
+     * @test
+     * @covers ::invokeStatically()
+     * @covers ::doInvocation()
+     */
+    public function it_invokes_a_virtual_static_method_on_some_object_via_some_call_handler()
+    {
+        // given a class name, and a list of supported call handlers
+        $className = ClassForDispatcherTesting::class;
+        $supportedCallHandlers = [
+            [
+                NamedConstructor::class,
+                [
+                    'methodName' => 'myFactoryMethod',
+                ]
+            ],
+        ];
+
+        // when invoking an allowed method
+        $result = Dispatcher::invokeStatically(
+            $className,
+            'myFactoryMethod',
+            [
+                17,
+            ],
+            $supportedCallHandlers
+        );
+
+        // then the result is as expected
+        $this->assertInstanceOf(ClassForDispatcherTesting::class, $result);
+        $this->assertSame(
+            17,
+            Reflection::getPropertyValue($result, 'someProperty')
+        );
     }
 
     /**
@@ -88,7 +126,7 @@ final class DispatcherTest extends TestCase
 
     /**
      * @test
-     * @covers ::invoke()
+     * @covers ::doInvocation()
      */
     public function it_throws_an_exception_if_no_call_handler_can_handle_the_method()
     {

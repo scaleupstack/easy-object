@@ -17,6 +17,16 @@ use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 
 abstract class AbstractCallHandler implements CallHandler
 {
+    public function executeStatic(
+        string $className,
+        string $methodName,
+        array $arguments,
+        ClassMetadata $classMetadata
+    )
+    {
+        throw new \Error("Calling non-static method when not in object context.");
+    }
+
     protected function checkForMethod(
         string $methodName,
         int $expectedNumberOfParameters,
