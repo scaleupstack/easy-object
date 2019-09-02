@@ -109,33 +109,5 @@ final class VirtualGetterTest extends TestCase
         // then the result is the properties value
         $this->assertSame(42, $result);
     }
-
-    /**
-     * @test
-     * @covers ::execute()
-     */
-    public function it_throws_an_exception_when_provided_to_many_method_parameters()
-    {
-        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
-        $handler = new VirtualGetter();
-        $object = new ClassForMagicTesting();
-        $metadata = $this->getClassMetadata(
-            'method',
-            'int getSomeProperty()'
-        );
-
-        // when providing any parameter to the virtual method
-        // then an exception is thrown
-        $this->expectException(\ArgumentCountError::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Too many arguments to function %s::%s(), 1 passed and exactly 0 expected',
-                ClassForMagicTesting::class,
-                'getSomeProperty'
-            )
-        );
-
-        $handler->execute($object, 'getSomeProperty', ['some param value'], $metadata);
-    }
 }
 

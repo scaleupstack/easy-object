@@ -31,7 +31,8 @@ final class DispatcherTest extends TestCase
      * @covers ::classMetadata()
      * @covers ::invoke()
      * @covers ::doInvocation()
-     * @covers ::assertReturnType()
+     * @covers ::assertGivenParametersMatchMethodSignature()
+     * @covers ::assertCorrectReturnType()
      */
     public function it_invokes_a_virtual_non_static_method_on_some_object_via_some_call_handler()
     {
@@ -91,7 +92,40 @@ final class DispatcherTest extends TestCase
 
     /**
      * @test
-     * @covers ::assertReturnType()
+     * @covers ::assertGivenParametersMatchMethodSignature()
+     */
+    public function it_throws_an_exception_when_the_number_of_parameters_is_invalid()
+    {
+        // given an object, and a list of supported call handlers
+        $object = new ClassForDispatcherTesting();
+        $supportedCallHandlers = [
+            VirtualGetter::class
+        ];
+
+        // when invoking an allowed method with the wrong number of parameters
+        // then an exception is thrown
+        $this->expectException(\ArgumentCountError::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'Too many arguments to function %s::%s(), 1 passed and exactly 0 expected',
+                ClassForDispatcherTesting::class,
+                'getSomeProperty'
+            )
+        );
+
+        $result = Dispatcher::invoke(
+            $object,
+            'getSomeProperty',
+            [
+                'no parameter allowed'
+            ],
+            $supportedCallHandlers
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::assertCorrectReturnType()
      */
     public function it_throws_an_exception_when_the_return_type_is_invalid()
     {
@@ -151,4 +185,3 @@ final class DispatcherTest extends TestCase
         );
     }
 }
-

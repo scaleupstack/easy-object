@@ -118,57 +118,6 @@ final class AbstractCallHandlerTest extends TestCase
 
     /**
      * @test
-     * @covers ::assertGivenParametersMatchMethodSignature()
-     */
-    public function it_returns_void_on_assertGivenParametersMatchMethodSignature_when_number_of_parameters_is_valid()
-    {
-        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-
-        // when asserting the parameters
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertGivenParametersMatchMethodSignature')
-            ->invoke(
-                $this->callHandler,
-                'withSomeProperty',
-                [
-                    'some value'
-                ],
-                $this->classMetadata
-            );
-
-        // then the $result is null
-        $this->assertNull($result);
-    }
-
-    /**
-     * @test
-     * @covers ::assertGivenParametersMatchMethodSignature()
-     */
-    public function it_throws_an_exception_on_assertGivenParametersMatchMethodSignature_when_number_of_parameters_is_invalid()
-    {
-        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-
-        // when asserting the parameters
-        // then an exception is thrown
-        $this->expectException(\ArgumentCountError::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Too few arguments to function %s::%s(), 0 passed and exactly 1 expected',
-                ClassForAbstractCallHandlerTesting::class,
-                'withSomeProperty'
-            )
-        );
-
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertGivenParametersMatchMethodSignature')
-            ->invoke(
-                $this->callHandler,
-                'withSomeProperty',
-                [],
-                $this->classMetadata
-            );
-    }
-
-    /**
-     * @test
      * @covers ::executeStatic()
      */
     public function it_throws_an_exception_when_executing_a_call_handler_statically_that_requires_object_context()

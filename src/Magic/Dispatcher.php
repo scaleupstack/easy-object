@@ -97,13 +97,15 @@ final class Dispatcher
 
             // execute
             if ($callHandler->canHandle($methodName, $classMetadata, $options)) {
+                $instance->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
+
                 if (! $isStatic) {
                     $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
                 } else {
                     $return = $callHandler->executeStatic($objectOrClassName, $methodName, $arguments, $classMetadata);
                 }
 
-                $instance->assertReturnType($objectOrClassName, $methodName, $return, $classMetadata);
+                $instance->assertCorrectReturnType($objectOrClassName, $methodName, $return, $classMetadata);
 
                 return $return;
             }
@@ -124,10 +126,35 @@ final class Dispatcher
             ->classMetadata[$className];
     }
 
+    private function assertGivenParametersMatchMethodSignature(
+        string $methodName,
+        array $parameters,
+        ClassMetadata $classMetadata
+    )
+    {
+        $methodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
+        $expectedParameterCount = count($methodMetadata->paramters);
+
+        $givenParametersCount = count($parameters);
+
+        if ($expectedParameterCount !== $givenParametersCount) {
+            throw new \ArgumentCountError(
+                sprintf(
+                    'Too %s arguments to function %s::%s(), %d passed and exactly %d expected',
+                    $expectedParameterCount > $givenParametersCount ? 'few' : 'many',
+                    $classMetadata->name,
+                    $methodName,
+                    count($parameters),
+                    $expectedParameterCount
+                )
+            );
+        }
+    }
+
     /**
      * @param object|string $objectContext
      */
-    private function assertReturnType(
+    private function assertCorrectReturnType(
         $objectContext,
         string $methodName,
         $returnValue,

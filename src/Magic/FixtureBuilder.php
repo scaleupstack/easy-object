@@ -55,16 +55,14 @@ final class FixtureBuilder extends AbstractCallHandler
 
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
-        $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
-
         $toBeBuiltClassMetadata = $this->getMetadataOfClassToBeBuilt($classMetadata);
 
         if ('build' === $methodName) {
             return $this->executeBuild($object, $toBeBuiltClassMetadata);
-        } else {
-            $this->executeWith($object, $methodName, $arguments, $toBeBuiltClassMetadata);
-            return $object;
         }
+
+        $this->executeWith($object, $methodName, $arguments, $toBeBuiltClassMetadata);
+        return $object;
     }
 
     private function executeBuild(object $object, ClassMetadata $toBeBuildClassMetadata)
