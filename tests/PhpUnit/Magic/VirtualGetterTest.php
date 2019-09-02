@@ -114,30 +114,6 @@ final class VirtualGetterTest extends TestCase
      * @test
      * @covers ::execute()
      */
-    public function it_throws_an_exception_when_the_returned_value_is_of_wrong_type()
-    {
-        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
-        $handler = new VirtualGetter();
-        $object = new ClassForMagicTesting();
-        $metadata = $this->getClassMetadata(
-            'method',
-            'string getSomeProperty()'
-        );
-
-        // when executing the method
-        // then an exception is thrown
-        $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage(
-            'Return value of ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting::getSomeProperty() must be of the type string, integer returned'
-        );
-
-        $handler->execute($object, 'getSomeProperty', [], $metadata);
-    }
-
-    /**
-     * @test
-     * @covers ::execute()
-     */
     public function it_throws_an_exception_when_provided_to_many_method_parameters()
     {
         // given a VirtualGetter call handler, an object, and the object's ClassMetadata

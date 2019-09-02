@@ -12,8 +12,10 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
+use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\Metadata\VirtualMethodMetadata;
 
 final class Dispatcher
 {
@@ -64,7 +66,10 @@ final class Dispatcher
             $callHandler = $instance->callHandlers[$callHandlerClassName];
 
             if ($callHandler->canHandle($methodName, $classMetadata, [])) {
-                return $callHandler->execute($object, $methodName, $arguments, $classMetadata);
+                $return = $callHandler->execute($object, $methodName, $arguments, $classMetadata);
+
+                $instance->assertReturnType($object, $methodName, $return, $classMetadata);
+                return $return;
             }
         }
 
@@ -81,5 +86,35 @@ final class Dispatcher
     {
         return Factory::getMetadataForClass($className)
             ->classMetadata[$className];
+    }
+
+    private function assertReturnType(
+        object $object,
+        string $methodName,
+        $returnValue,
+        ClassMetadata $classMetadata
+    )
+    {
+        /** @var VirtualMethodMetadata $virtualMethodMetadata */
+        $virtualMethodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
+        $returnType = $virtualMethodMetadata->returnType;
+
+        if (! is_null($returnType->declaration())) {
+            $isTypeValid = $returnType->validateVariable($returnValue, $object);
+
+            if (! $isTypeValid) {
+                // TODO: Handle error on strict_types declaration of calling context (not file defining the class) :-/
+
+                throw new \TypeError(
+                    sprintf(
+                        'Return value of %s::%s() must be of the type %s, %s returned',
+                        $classMetadata->name,
+                        $methodName,
+                        $returnType->declaration(),
+                        gettype($returnValue)
+                    )
+                );
+            }
+        }
     }
 }

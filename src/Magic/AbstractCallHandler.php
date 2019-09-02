@@ -99,33 +99,4 @@ abstract class AbstractCallHandler implements CallHandler
 
         // TODO: The types of the parameters need to be checked
     }
-
-    protected function assertReturnType(
-        object $object,
-        string $methodName,
-        $returnValue,
-        ClassMetadata $classMetadata
-    )
-    {
-        $virtualMethodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
-        $returnType = $virtualMethodMetadata->returnType;
-
-        if (! is_null($returnType->declaration())) {
-            $isTypeValid = $returnType->validateVariable($returnValue, $object);
-
-            if (! $isTypeValid) {
-                // TODO: Handle error on strict_types declaration of calling context (not file defining the class) :-/
-
-                throw new \TypeError(
-                    sprintf(
-                        'Return value of %s::%s() must be of the type %s, %s returned',
-                        $classMetadata->name,
-                        $methodName,
-                        $returnType->declaration(),
-                        gettype($returnValue)
-                    )
-                );
-            }
-        }
-    }
 }

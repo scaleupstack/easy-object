@@ -16,6 +16,7 @@ use ScaleUpStack\EasyObject\Magic\Dispatcher;
 use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForDispatcherTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
+use ScaleUpStack\Reflection\Reflection;
 
 /**
  * @coversDefaultClass \ScaleUpStack\EasyObject\Magic\Dispatcher
@@ -28,6 +29,7 @@ final class DispatcherTest extends TestCase
      * @covers ::__construct()
      * @covers ::classMetadata()
      * @covers ::invoke()
+     * @covers ::assertReturnType()
      */
     public function it_invokes_a_virtual_method_on_some_object_via_some_call_handler()
     {
@@ -47,6 +49,41 @@ final class DispatcherTest extends TestCase
 
         // then the result is as expected
         $this->assertSame(42, $result);
+    }
+
+    /**
+     * @test
+     * @covers ::assertReturnType()
+     */
+    public function it_throws_an_exception_when_the_return_type_is_invalid()
+    {
+        // given an object, and a list of supported call handlers
+        $object = new ClassForDispatcherTesting();
+        $supportedCallHandlers = [
+            VirtualGetter::class
+        ];
+        // and an invalid type of the property (according to the virtual getter)
+        Reflection::setPropertyValue($object, 'someProperty', 'not an int as expected');
+
+        // when invoking an allowed method that would return a wrong return type
+        // then an exception is thrown
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'Return value of %s::%s() must be of the type %s, %s returned',
+                ClassForDispatcherTesting::class,
+                'getSomeProperty',
+                'int',
+                'string'
+            )
+        );
+
+        $result = Dispatcher::invoke(
+            $object,
+            'getSomeProperty',
+            [],
+            $supportedCallHandlers
+        );
     }
 
     /**

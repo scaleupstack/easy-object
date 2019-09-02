@@ -30,10 +30,6 @@ final class VirtualGetter extends AbstractCallHandler
         $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
         $propertyName = $this->propertyName($methodName, 'get', false, $classMetadata);
-        $propertyValue = Reflection::getPropertyValue($object, $propertyName);
-
-        $this->assertReturnType($object, $methodName, $propertyValue, $classMetadata);
-
-        return $propertyValue;
+        return Reflection::getPropertyValue($object, $propertyName);
     }
 }
