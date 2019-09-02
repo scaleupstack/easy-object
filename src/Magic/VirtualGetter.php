@@ -28,7 +28,7 @@ final class VirtualGetter extends AbstractCallHandler
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
         $this->assertCanHandle($methodName, $classMetadata);
-        $this->assertParameters($methodName, $arguments, $classMetadata);
+        $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
         $propertyName = $this->propertyName($methodName, 'get', false, $classMetadata);
         $propertyValue = Reflection::getPropertyValue($object, $propertyName);

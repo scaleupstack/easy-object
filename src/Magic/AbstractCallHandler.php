@@ -86,7 +86,7 @@ abstract class AbstractCallHandler implements CallHandler
         }
     }
 
-    protected function assertParameters(
+    protected function assertGivenParametersMatchMethodSignature(
         string $methodName,
         array $parameters,
         ClassMetadata $classMetadata
@@ -95,13 +95,13 @@ abstract class AbstractCallHandler implements CallHandler
         $methodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
         $expectedParameterCount = count($methodMetadata->paramters);
 
-        $givenParametetersCount = count($parameters);
+        $givenParametersCount = count($parameters);
 
-        if ($expectedParameterCount !== $givenParametetersCount) {
+        if ($expectedParameterCount !== $givenParametersCount) {
             throw new \ArgumentCountError(
                 sprintf(
                     'Too %s arguments to function %s::%s(), %d passed and exactly %d expected',
-                    $expectedParameterCount > $givenParametetersCount ? 'few' : 'many',
+                    $expectedParameterCount > $givenParametersCount ? 'few' : 'many',
                     $classMetadata->name,
                     $methodName,
                     count($parameters),

@@ -169,14 +169,14 @@ final class AbstractCallHandlerTest extends TestCase
 
     /**
      * @test
-     * @covers ::assertParameters()
+     * @covers ::assertGivenParametersMatchMethodSignature()
      */
-    public function it_returns_void_on_assertParameters_when_number_of_parameters_is_valid()
+    public function it_returns_void_on_assertGivenParametersMatchMethodSignature_when_number_of_parameters_is_valid()
     {
         // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
 
         // when asserting the parameters
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertParameters')
+        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertGivenParametersMatchMethodSignature')
             ->invoke(
                 $this->callHandler,
                 'withSomeProperty',
@@ -192,9 +192,9 @@ final class AbstractCallHandlerTest extends TestCase
 
     /**
      * @test
-     * @covers ::assertParameters()
+     * @covers ::assertGivenParametersMatchMethodSignature()
      */
-    public function it_throws_an_exception_on_assertParameters_when_number_of_parameters_is_invalid()
+    public function it_throws_an_exception_on_assertGivenParametersMatchMethodSignature_when_number_of_parameters_is_invalid()
     {
         // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
 
@@ -209,7 +209,7 @@ final class AbstractCallHandlerTest extends TestCase
             )
         );
 
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertParameters')
+        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertGivenParametersMatchMethodSignature')
             ->invoke(
                 $this->callHandler,
                 'withSomeProperty',
