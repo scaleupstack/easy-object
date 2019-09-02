@@ -17,7 +17,7 @@ use ScaleUpStack\Reflection\Reflection;
 
 final class VirtualGetter extends AbstractCallHandler
 {
-    public function canHandle(string $methodName, ClassMetadata $classMetadata) : bool
+    public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool
     {
         return (
             $this->checkForMethod($methodName, 0, $classMetadata) &&
@@ -27,7 +27,6 @@ final class VirtualGetter extends AbstractCallHandler
 
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
-        $this->assertCanHandle($methodName, $classMetadata);
         $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
         $propertyName = $this->propertyName($methodName, 'get', false, $classMetadata);

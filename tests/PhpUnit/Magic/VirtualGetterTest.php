@@ -73,7 +73,7 @@ final class VirtualGetterTest extends TestCase
         $metadata = $this->getClassMetadata($annotationTag, $annotationArguments);
 
         // when checking if the handler is registered for a property
-        $canHandle = $handler->canHandle($methodName, $metadata);
+        $canHandle = $handler->canHandle($methodName, $metadata, []);
 
         // then the result is as expeced (as provided by the test method's parameter)
         $this->assertSame($expectedCanHandle, $canHandle);
@@ -132,34 +132,6 @@ final class VirtualGetterTest extends TestCase
         );
 
         $handler->execute($object, 'getSomeProperty', [], $metadata);
-    }
-
-    /**
-     * @test
-     * @covers ::execute()
-     */
-    public function it_throws_an_exception_when_it_cannot_handle_the_method()
-    {
-        // given a VirtualGetter call handler, an object, and the object's ClassMetadata
-        $handler = new VirtualGetter();
-        $object = new ClassForMagicTesting();
-        $metadata = $this->getClassMetadata(
-            'method',
-            'string getSomeProperty()'
-        );
-
-        // when executing a virtual method that it cannot handle
-        // then an exception is thrown
-        $this->expectException(\Error::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Call to undefined method %s::%s()',
-                ClassForMagicTesting::class,
-                'unknownMethod'
-            )
-        );
-
-        $handler->execute($object, 'unknownMethod', [], $metadata);
     }
 
     /**

@@ -73,19 +73,6 @@ abstract class AbstractCallHandler implements CallHandler
         return null;
     }
 
-    protected function assertCanHandle(string $methodName, ClassMetadata $classMetadata)
-    {
-        if (! $this->canHandle($methodName, $classMetadata)) {
-            throw new \Error(
-                sprintf(
-                    'Call to undefined method %s::%s()',
-                    $classMetadata->name,
-                    $methodName
-                )
-            );
-        }
-    }
-
     protected function assertGivenParametersMatchMethodSignature(
         string $methodName,
         array $parameters,

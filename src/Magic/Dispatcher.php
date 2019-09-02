@@ -63,7 +63,7 @@ final class Dispatcher
 
             $callHandler = $instance->callHandlers[$callHandlerClassName];
 
-            if ($callHandler->canHandle($methodName, $classMetadata)) {
+            if ($callHandler->canHandle($methodName, $classMetadata, [])) {
                 return $callHandler->execute($object, $methodName, $arguments, $classMetadata);
             }
         }

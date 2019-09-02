@@ -24,9 +24,11 @@ interface CallHandler
      *
      * @return bool
      */
-    public function canHandle(string $methodName, ClassMetadata $classMetadata) : bool;
+    public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool;
 
     /**
+     * Executes a method on a given object.
+     *
      * Do some assertions regarding the method, and execute the relevant code. For example:
      *
      * - Assert that the method can be handled be the CallHandler.

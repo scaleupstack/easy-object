@@ -53,7 +53,7 @@ final class FixtureBuilderTest extends TestCase
             ->classMetadata[ClassForFixtureBuilderTesting::class];
 
         // when checking if the handler is registered for a method
-        $canHandle = $callHandler->canHandle($methodName, $classMetadata);
+        $canHandle = $callHandler->canHandle($methodName, $classMetadata, []);
 
         // then the result is as expeced
         $this->assertSame($expectedCanHandle, $canHandle);
@@ -73,14 +73,14 @@ final class FixtureBuilderTest extends TestCase
             ->classMetadata[ClassForFixtureBuilderTesting::class];
         // and a method name that would be supported (if build() is available)
         $methodName = 'withSomeProperty';
-        Assert::true($callHandler->canHandle($methodName, $classMetadata));
+        Assert::true($callHandler->canHandle($methodName, $classMetadata, []));
         // but the ClassMetadata has no build() method
         /** @var ClassMetadata $classMetadata */
         $classMetadata = clone $classMetadata;
         unset($classMetadata->features[VirtualMethods::FEATURES_KEY]['build']);
 
         // when checking if the handler can handle a with method
-        $result = $callHandler->canHandle($methodName, $classMetadata);
+        $result = $callHandler->canHandle($methodName, $classMetadata, []);
 
         // then the result is false
         $this->assertFalse($result);
@@ -101,7 +101,7 @@ final class FixtureBuilderTest extends TestCase
             ->classMetadata[ClassForFixtureBuilderTesting::class];
         // and a method name that would be supported (if build() would have a return type)
         $methodName = 'withSomeProperty';
-        Assert::true($callHandler->canHandle($methodName, $classMetadata));
+        Assert::true($callHandler->canHandle($methodName, $classMetadata, []));
         // but the ClassMetadata's build() method has no return type
         $classMetadata = clone $classMetadata;
         $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'] =
@@ -113,7 +113,7 @@ final class FixtureBuilderTest extends TestCase
         );
 
         // when checking if the handler can handle a with method
-        $result = $callHandler->canHandle($methodName, $classMetadata);
+        $result = $callHandler->canHandle($methodName, $classMetadata, []);
 
         // then the result is false
         $this->assertFalse($result);

@@ -23,7 +23,7 @@ final class FixtureBuilder extends AbstractCallHandler
 {
     private const CONFIGURED_PROPERTIES = 'configuredProperties';
 
-    public function canHandle(string $methodName, ClassMetadata $classMetadata) : bool
+    public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool
     {
         // a build() method is always required
         if (! $this->checkForMethod('build', 0, $classMetadata)) {
@@ -55,7 +55,6 @@ final class FixtureBuilder extends AbstractCallHandler
 
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
-        $this->assertCanHandle($methodName, $classMetadata);
         $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
         $toBeBuiltClassMetadata = $this->getMetadataOfClassToBeBuilt($classMetadata);

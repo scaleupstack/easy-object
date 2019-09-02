@@ -118,57 +118,6 @@ final class AbstractCallHandlerTest extends TestCase
 
     /**
      * @test
-     * @covers ::assertCanHandle()
-     */
-    public function it_returns_void_on_assertCanHandle_when_it_can_handle_a_method()
-    {
-        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-        // and the AbstractCallHandler can handle the method
-        $this->callHandler->method('canHandle')->willReturn(true);
-
-        // when asserting that a method can be handled
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'assertCanHandle')
-            ->invoke(
-                $this->callHandler,
-                'getSomeProperty',
-                $this->classMetadata
-            );
-
-        // then the $result was null
-        $this->assertNull($result);
-    }
-
-    /**
-     * @test
-     * @covers ::assertCanHandle()
-     */
-    public function it_throws_an_exception_on_assertCanHandle_when_it_cannot_handle_a_method()
-    {
-        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-        // and the AbstractCallHandler can't handle the method
-        $this->callHandler->method('canHandle')->willReturn(false);
-
-        // when asserting that a method can be handled
-        // then an exception is thrown
-        $this->expectException(\Error::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Call to undefined method %s::%s()',
-                ClassForAbstractCallHandlerTesting::class,
-                'someUnknownMethod'
-            )
-        );
-
-        Reflection::methodOfClass(AbstractCallHandler::class, 'assertCanHandle')
-            ->invoke(
-                $this->callHandler,
-                'someUnknownMethod',
-                $this->classMetadata
-            );
-    }
-
-    /**
-     * @test
      * @covers ::assertGivenParametersMatchMethodSignature()
      */
     public function it_returns_void_on_assertGivenParametersMatchMethodSignature_when_number_of_parameters_is_valid()
