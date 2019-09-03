@@ -115,20 +115,4 @@ final class AbstractCallHandlerTest extends TestCase
         // then the result is as expected
         $this->assertSame($expectedPropertyResult, $result);
     }
-
-    /**
-     * @test
-     * @covers ::executeStatic()
-     */
-    public function it_throws_an_exception_when_executing_a_call_handler_statically_that_requires_object_context()
-    {
-        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-
-        // when calling a CallHandler, that requires an object context, statically
-        // then an exception is thrown
-        $this->expectException(\Error::class);
-        $this->expectExceptionMessage("Calling non-static method when not in object context.");
-
-        $this->callHandler->executeStatic('SomeClassName', 'someMethodName', [], $this->classMetadata);
-    }
 }

@@ -23,18 +23,19 @@ final class NamedConstructor extends AbstractCallHandler
         return true;
     }
 
-    public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata)
+    public function requiresObjectContext() : bool
     {
-        return $this->executeStatic(
-            get_class($object),
-            $methodName,
-            $arguments,
-            $classMetadata
-        );
+        return false;
     }
 
-    public function executeStatic(string $className, string $methodName, array $arguments, ClassMetadata $classMetadata)
+    /**
+     * @param $objectOrClassName
+     *        NOTE: Intentionally the object type was left out for $objectOrClassName here.
+     */
+    public function execute($objectOrClassName, string $methodName, array $arguments, ClassMetadata $classMetadata)
     {
+        $className = is_string($objectOrClassName) ? $objectOrClassName : get_class($objectOrClassName);
+
         $newObject = Reflection::classByName($className)
             ->newInstanceWithoutConstructor();
 

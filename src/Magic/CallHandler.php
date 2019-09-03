@@ -27,6 +27,11 @@ interface CallHandler
     public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool;
 
     /**
+     * Does the CallHandler require an object context (or implements a static method).
+     */
+    public function requiresObjectContext() : bool;
+
+    /**
      * Executes a method on a given object.
      *
      * Do some assertions regarding the method, and execute the relevant code. For example:
@@ -37,14 +42,10 @@ interface CallHandler
      * - Assert for the correct return type.
      * - Return the result.
      *
+     * NOTE: If you implement a CallHandler for static methods, remove the `object` type hint in the concrete
+     *       implementation.
+     *
      * @return mixed
      */
     public function execute(object $object, string $methodName, array $arguments, ClassMetadata $classMetadata);
-
-    /**
-     * Executes a static method on a given class (name).
-     *
-     * Cf. self::execute()
-     */
-    public function executeStatic(string $className, string $methodName, array $arguments, ClassMetadata $classMetadata);
 }

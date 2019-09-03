@@ -43,6 +43,11 @@ final class Dispatcher
     }
 
     /**
+     * @param array  $prioritizedCallHandlerClassNames
+     *        Values of that array can be
+     *        - a string $className, or
+     *        - an array [string $className, array $options]
+     *
      * @return mixed
      */
     public static function invoke(
@@ -99,16 +104,26 @@ final class Dispatcher
             if ($callHandler->canHandle($methodName, $classMetadata, $options)) {
                 $instance->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
-                if (! $isStatic) {
-                    $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
-                } else {
-                    $return = $callHandler->executeStatic($objectOrClassName, $methodName, $arguments, $classMetadata);
+                if (
+                    $isStatic &&
+                    $callHandler->requiresObjectContext()
+                ) {
+                    throw new \Error("Calling a non-static method when not in object context.");
                 }
+
+                $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
 
                 $instance->assertCorrectReturnType($objectOrClassName, $methodName, $return, $classMetadata);
 
                 return $return;
             }
+        }
+
+        if (
+            ! $isStatic &&
+            method_exists($className, '__callStatic')
+        ) {
+            return $className::$methodName(... $arguments);
         }
 
         throw new \Error(

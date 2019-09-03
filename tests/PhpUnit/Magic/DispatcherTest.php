@@ -16,6 +16,7 @@ use ScaleUpStack\EasyObject\Magic\Dispatcher;
 use ScaleUpStack\EasyObject\Magic\NamedConstructor;
 use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForDispatcherTesting;
+use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForNamedConstructorTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 use ScaleUpStack\Reflection\Reflection;
 
@@ -92,6 +93,23 @@ final class DispatcherTest extends TestCase
 
     /**
      * @test
+     * @covers ::doInvocation()
+     */
+    public function it_can_execute_the_static_method_non_statically_on_objects()
+    {
+        // given an object with a __call() method that does not handle the static method itself but has a __callStatic()
+        // method that can handle it
+        $object = ClassForNamedConstructorTesting::create('some string', 42);
+
+        // when calling the factory method non-statically
+        $newObject = $object->create('some other string', 11);
+
+        // then the invocation is redirected to __callStatic(), and the result is as expected from the CallHandler
+        $this->assertInstanceOf(ClassForNamedConstructorTesting::class, $newObject);
+    }
+
+    /**
+     * @test
      * @covers ::assertGivenParametersMatchMethodSignature()
      */
     public function it_throws_an_exception_when_the_number_of_parameters_is_invalid()
@@ -120,6 +138,30 @@ final class DispatcherTest extends TestCase
                 'no parameter allowed'
             ],
             $supportedCallHandlers
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::doInvocation()
+     * @covers \ScaleUpStack\EasyObject\Magic\AbstractCallHandler::requiresObjectContext()
+     */
+    public function it_throws_an_exception_when_executing_a_call_handler_statically_that_requires_object_context()
+    {
+        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
+
+        // when calling a CallHandler, that requires an object context, statically
+        // then an exception is thrown
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage("Calling a non-static method when not in object context.");
+
+        Dispatcher::invokeStatically(
+            ClassForDispatcherTesting::class,
+            'getSomeProperty',
+            [],
+            [
+                VirtualGetter::class
+            ]
         );
     }
 
