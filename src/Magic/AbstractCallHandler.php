@@ -13,32 +13,48 @@
 namespace ScaleUpStack\EasyObject\Magic;
 
 use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
+use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
+use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
+use ScaleUpStack\Reflection\Reflection;
 
 abstract class AbstractCallHandler implements CallHandler
 {
+    /* default implementation of CallHandler methods */
+
     public function requiresObjectContext() : bool
     {
         return true;
     }
 
-    protected function checkForMethod(
-        string $methodName,
-        int $expectedNumberOfParameters,
-        ClassMetadata $classMetadata
-    )
+    /* helper methods */
+
+    protected function getMethodMetadata(string $methodName, ClassMetadata $classMetadata) : ?VirtualMethodMetadata
     {
         $virtualMethods = $classMetadata->features[VirtualMethods::FEATURES_KEY];
 
         // check for corresponding @method annotation
         if (! array_key_exists($methodName, $virtualMethods)) {
-            return false;
+            return null;
         }
 
         // check for expected number of parameters
-        $methodMetadata = $virtualMethods[$methodName];
+        return $virtualMethods[$methodName];
+    }
 
-        if ($expectedNumberOfParameters !== count($methodMetadata->paramters)) {
+    protected function checkMethodsArgumentsCount(
+        string $methodName,
+        int $expectedNumberOfParameters,
+        ClassMetadata $classMetadata
+    ) : bool
+    {
+        $methodMetadata = $this->getMethodMetadata($methodName, $classMetadata);
+
+        if (is_null($methodMetadata)) {
+            return false;
+        }
+
+        if ($expectedNumberOfParameters !== count($methodMetadata->parameters)) {
             return false;
         }
 
@@ -76,5 +92,10 @@ abstract class AbstractCallHandler implements CallHandler
         }
 
         return null;
+    }
+
+    protected function setProperty(object $object, string $propertyName, $value, PropertyMetadata $propertyMetadata)
+    {
+        Reflection::setPropertyValue($object, $propertyName, $value);
     }
 }

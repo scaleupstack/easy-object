@@ -30,7 +30,7 @@ final class VirtualMethodMetadata
     /**
      * @var DataTypeMetadata[]
      */
-    public $paramters = [];
+    public $parameters = [];
 
     /**
      * @var DataTypeMetadata
@@ -38,10 +38,21 @@ final class VirtualMethodMetadata
     public $returnType;
 
     /**
+     * @var bool
+     */
+    public $isStatic;
+
+    /**
      * @param DataTypeMetadata[] $parameters
      *        <parameterName> => <DataTypeMetadata>
      */
-    public function __construct(string $class, string $name, array $parameters, DataTypeMetadata $returnType)
+    public function __construct(
+        string $class,
+        string $name,
+        array $parameters,
+        DataTypeMetadata $returnType,
+        bool $isStatic
+    )
     {
         Assert::allIsInstanceOf(
             $parameters,
@@ -55,7 +66,8 @@ final class VirtualMethodMetadata
 
         $this->class = $class;
         $this->name = $name;
-        $this->paramters = $parameters;
+        $this->parameters = $parameters;
         $this->returnType = $returnType;
+        $this->isStatic = $isStatic;
     }
 }

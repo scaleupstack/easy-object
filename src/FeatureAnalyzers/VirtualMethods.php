@@ -55,7 +55,8 @@ final class VirtualMethods implements FeatureAnalyzer
                 $classMetadata->name,
                 $methodAnnotation->methodName(),
                 $parameters,
-                $returnType
+                $returnType,
+                $methodAnnotation->isStatic()
             );
         }
 

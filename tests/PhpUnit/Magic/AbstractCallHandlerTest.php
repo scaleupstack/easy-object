@@ -16,6 +16,7 @@ use ScaleUpStack\EasyObject\Magic\AbstractCallHandler;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForAbstractCallHandlerTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Reflection\Reflection;
 
 /**
@@ -28,6 +29,9 @@ final class AbstractCallHandlerTest extends TestCase
      */
     private $callHandler;
 
+    /**
+     * @var ClassMetadata
+     */
     private $classMetadata;
 
     protected function setUp()
@@ -51,9 +55,10 @@ final class AbstractCallHandlerTest extends TestCase
     /**
      * @test
      * @dataProvider provides_virtual_method_names_with_parameter_count
-     * @covers ::checkForMethod()
+     * @covers ::checkMethodsArgumentsCount()
+     * @covers ::getMethodMetadata()
      */
-    public function it_checks_if_virtual_method_matches(
+    public function it_checks_if_argument_count_of_virtual_method_matches(
         string $methodName,
         int $expectedParameterCount,
         bool $expectedResult
@@ -63,7 +68,7 @@ final class AbstractCallHandlerTest extends TestCase
         // and a method name, and expected number of parameters both as provided via test parameters
 
         // when checking for the method
-        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'checkForMethod')
+        $result = Reflection::methodOfClass(AbstractCallHandler::class, 'checkMethodsArgumentsCount')
             ->invoke(
                 $this->callHandler,
                 $methodName,
@@ -100,7 +105,7 @@ final class AbstractCallHandlerTest extends TestCase
     )
     {
         // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp()
-        // and a method name, a method prefix, and if the prefix is required
+        // and a method name, a method prefix, and if the prefix is required as provided by the test's parameters
 
         // when requesting the property name
         $result = Reflection::methodOfClass(AbstractCallHandler::class, 'propertyName')
@@ -114,5 +119,35 @@ final class AbstractCallHandlerTest extends TestCase
 
         // then the result is as expected
         $this->assertSame($expectedPropertyResult, $result);
+    }
+
+    /**
+     * @test
+     * @covers ::setProperty()
+     */
+    public function it_sets_the_value_of_an_object_when_type_matches()
+    {
+        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp(),
+        // and some object, a property name, and a new value
+        $object = new ClassForAbstractCallHandlerTesting();
+        $propertyName = 'someProperty';
+        $newValue = 'newValue';
+        // and a method name, a method prefix, and if the prefix is required as provided by the test's parameters
+
+        // when requesting the property name
+        Reflection::methodOfClass(AbstractCallHandler::class, 'setProperty')
+            ->invoke(
+                $this->callHandler,
+                $object,
+                $propertyName,
+                $newValue,
+                $this->classMetadata->propertyMetadata[$propertyName]
+            );
+
+        // then the property of the object is set
+        $this->assertSame(
+            $newValue,
+            Reflection::getPropertyValue($object, 'someProperty')
+        );
     }
 }

@@ -75,7 +75,7 @@ final class VirtualGetterTest extends TestCase
         // when checking if the handler is registered for a property
         $canHandle = $handler->canHandle($methodName, $metadata, []);
 
-        // then the result is as expeced (as provided by the test method's parameter)
+        // then the result is as expected (as provided by the test method's parameter)
         $this->assertSame($expectedCanHandle, $canHandle);
     }
 
@@ -110,4 +110,3 @@ final class VirtualGetterTest extends TestCase
         $this->assertSame(42, $result);
     }
 }
-

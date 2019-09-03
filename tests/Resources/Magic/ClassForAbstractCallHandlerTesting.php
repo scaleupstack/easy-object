@@ -21,6 +21,9 @@ use ScaleUpStack\EasyObject\Tests\Resources\Traits\EntityForTesting;
  */
 final class ClassForAbstractCallHandlerTesting
 {
+    /**
+     * @var string
+     */
     private $someProperty;
 
     private $getSomeValueDone;

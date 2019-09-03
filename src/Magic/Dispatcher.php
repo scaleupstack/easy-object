@@ -70,6 +70,9 @@ final class Dispatcher
         return self::doInvocation($className, $methodName, $arguments, $prioritizedCallHandlerClassNames, true);
     }
 
+    /**
+     * @param object|string $objectOrClassName
+     */
     private static function doInvocation(
         $objectOrClassName,
         string $methodName,
@@ -148,7 +151,7 @@ final class Dispatcher
     )
     {
         $methodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
-        $expectedParameterCount = count($methodMetadata->paramters);
+        $expectedParameterCount = count($methodMetadata->parameters);
 
         $givenParametersCount = count($parameters);
 

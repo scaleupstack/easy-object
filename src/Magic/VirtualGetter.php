@@ -20,7 +20,7 @@ final class VirtualGetter extends AbstractCallHandler
     public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool
     {
         return (
-            $this->checkForMethod($methodName, 0, $classMetadata) &&
+            $this->checkMethodsArgumentsCount($methodName, 0, $classMetadata) &&
             null !== $this->propertyName($methodName, 'get', false, $classMetadata)
         );
     }

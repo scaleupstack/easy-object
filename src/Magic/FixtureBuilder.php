@@ -26,7 +26,7 @@ final class FixtureBuilder extends AbstractCallHandler
     public function canHandle(string $methodName, ClassMetadata $classMetadata, array $options) : bool
     {
         // a build() method is always required
-        if (! $this->checkForMethod('build', 0, $classMetadata)) {
+        if (! $this->checkMethodsArgumentsCount('build', 0, $classMetadata)) {
             return false;
         }
 
@@ -38,7 +38,7 @@ final class FixtureBuilder extends AbstractCallHandler
         // otherwise, a with<SomeProperty>() method:
 
         // check if method is declared
-        if (! $this->checkForMethod($methodName, 1, $classMetadata))  {
+        if (! $this->checkMethodsArgumentsCount($methodName, 1, $classMetadata))  {
             return false;
         }
 
@@ -111,9 +111,7 @@ EVAL_CODE;
                 $value = eval($phpString);
             }
 
-            // TODO: validate data type
-
-            Reflection::setPropertyValue($newObject, $propertyName, $value);
+            $this->setProperty($newObject, $propertyName, $value, $propertyMetadata);
         }
 
         return $newObject;

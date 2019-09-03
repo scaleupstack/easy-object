@@ -49,7 +49,8 @@ final class VirtualMethodsTest extends TestCase
                     $className,
                     'someProperty',
                     [],
-                    new DataTypeMetadata('string')
+                    new DataTypeMetadata('string'),
+                    false
                 ),
                 'withSomeProperty' => new VirtualMethodMetadata(
                     $className,
@@ -57,7 +58,8 @@ final class VirtualMethodsTest extends TestCase
                     [
                         'someProperty' => new DataTypeMetadata('string')
                     ],
-                    new DataTypeMetadata('self')
+                    new DataTypeMetadata('self'),
+                    false
                 ),
             ],
             $classMetadata->features[VirtualMethods::FEATURES_KEY]

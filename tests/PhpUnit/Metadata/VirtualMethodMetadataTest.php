@@ -37,12 +37,12 @@ final class VirtualMethodMetadataTest extends TestCase
         $returnType = new DataTypeMetadata('\DateTime');
 
         // when constructing the VirtualMethodMetadata
-        $metadata = new VirtualMethodMetadata($className, $methodName, $parameters, $returnType);
+        $metadata = new VirtualMethodMetadata($className, $methodName, $parameters, $returnType, false);
 
         // then the values are set
         $this->assertSame($className, $metadata->class);
         $this->assertSame($methodName, $metadata->name);
-        $this->assertSame($parameters, $metadata->paramters);
+        $this->assertSame($parameters, $metadata->parameters);
         $this->assertSame($returnType, $metadata->returnType);
     }
 }
