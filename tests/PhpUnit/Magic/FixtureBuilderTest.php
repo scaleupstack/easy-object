@@ -14,12 +14,12 @@ namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Magic;
 
 use ScaleUpStack\Annotations\Annotations;
 use ScaleUpStack\EasyObject\Assert;
-use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\EasyObject\Magic\FixtureBuilder;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForFixtureBuilderTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\Magic\ClassForMagicTesting;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
 use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Metadata\DataTypeMetadata;
 use ScaleUpStack\Reflection\Reflection;

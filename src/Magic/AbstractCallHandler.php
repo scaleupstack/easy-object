@@ -12,8 +12,8 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
-use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
-use ScaleUpStack\EasyObject\Metadata\VirtualMethodMetadata;
+use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
+use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethodMetadata;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
 use ScaleUpStack\Reflection\Reflection;

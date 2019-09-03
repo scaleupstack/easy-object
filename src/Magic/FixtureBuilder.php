@@ -13,8 +13,8 @@
 namespace ScaleUpStack\EasyObject\Magic;
 
 use ScaleUpStack\Annotations\Annotation\UnknownAnnotation;
-use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
 use ScaleUpStack\Reflection\Reflection;

@@ -12,8 +12,8 @@ namespace ScaleUpStack\EasyObject\Tests;
  * @link      https://github.com/scaleupstack/easy-object
  */
 
-use ScaleUpStack\EasyObject\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Configuration;
+use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
