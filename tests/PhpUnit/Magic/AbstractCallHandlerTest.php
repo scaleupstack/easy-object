@@ -141,7 +141,7 @@ final class AbstractCallHandlerTest extends TestCase
                 $object,
                 $propertyName,
                 $newValue,
-                $this->classMetadata->propertyMetadata[$propertyName]
+                $this->classMetadata
             );
 
         // then the property of the object is set
@@ -149,5 +149,38 @@ final class AbstractCallHandlerTest extends TestCase
             $newValue,
             Reflection::getPropertyValue($object, 'someProperty')
         );
+    }
+
+    /**
+     * @test
+     * @covers ::setProperty()
+     */
+    public function it_throws_an_exception_when_setting_the_property_of_an_object_with_an_invalid_type()
+    {
+        // given a mocked AbstractCallHandler, and ClassMetadata of some object as provided in setUp(),
+        // and some object, a property name, and an invalid value
+        $object = new ClassForAbstractCallHandlerTesting();
+        $propertyName = 'someProperty';
+        $invalidValue = 42;
+
+        // when requesting the property name
+        // then an Exception is thrown
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                "Value for property %s::\$%s must be of the type string, integer given",
+                ClassForAbstractCallHandlerTesting::class,
+                $propertyName
+            )
+        );
+
+        Reflection::methodOfClass(AbstractCallHandler::class, 'setProperty')
+            ->invoke(
+                $this->callHandler,
+                $object,
+                $propertyName,
+                $invalidValue,
+                $this->classMetadata
+            );
     }
 }

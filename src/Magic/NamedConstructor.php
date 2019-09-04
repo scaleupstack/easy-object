@@ -97,7 +97,7 @@ final class NamedConstructor extends AbstractCallHandler
                 $newObject,
                 $propertyMetadata->name,
                 $arguments[$counter],
-                $propertyMetadata
+                $classMetadata
             );
 
             $counter++;

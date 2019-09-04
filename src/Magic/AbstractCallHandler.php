@@ -12,10 +12,11 @@
 
 namespace ScaleUpStack\EasyObject\Magic;
 
+use ScaleUpStack\Metadata\FeatureAnalyzers\TypedProperties;
+use ScaleUpStack\Metadata\FeatureAnalyzers\TypedPropertyMetadata;
 use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethodMetadata;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
-use ScaleUpStack\Metadata\Metadata\PropertyMetadata;
 use ScaleUpStack\Reflection\Reflection;
 
 abstract class AbstractCallHandler implements CallHandler
@@ -94,8 +95,24 @@ abstract class AbstractCallHandler implements CallHandler
         return null;
     }
 
-    protected function setProperty(object $object, string $propertyName, $value, PropertyMetadata $propertyMetadata)
+    protected function setProperty(object $object, string $propertyName, $value, ClassMetadata $classMetadata)
     {
+        /** @var TypedPropertyMetadata $typedPropertyMetadata */
+        $typedPropertyMetadata = $classMetadata->features[TypedProperties::class][$propertyName];
+        $isValid = $typedPropertyMetadata->docBlockDataTypeMetadata()->validateVariable($value, $object);
+
+        if (! $isValid) {
+            throw new \TypeError(
+                sprintf(
+                    "Value for property %s::\$%s must be of the type %s, %s given",
+                    get_class($object),
+                    $propertyName,
+                    $typedPropertyMetadata->docBlockDataTypeMetadata()->declaration(),
+                    gettype($value)
+                )
+            );
+        }
+
         Reflection::setPropertyValue($object, $propertyName, $value);
     }
 }

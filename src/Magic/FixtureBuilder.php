@@ -111,7 +111,7 @@ EVAL_CODE;
                 $value = eval($phpString);
             }
 
-            $this->setProperty($newObject, $propertyName, $value, $propertyMetadata);
+            $this->setProperty($newObject, $propertyName, $value, $toBeBuildClassMetadata);
         }
 
         return $newObject;
