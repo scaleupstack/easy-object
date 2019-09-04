@@ -25,7 +25,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $featureAnalyzers = Configuration::featureAnalyzers();
 
         foreach ($featureAnalyzers as $analyzer) {
-            $key = $analyzer->name();
+            $key = get_class($analyzer);
             $metadata =  $analyzer->extractMetadata($classMetadata);
 
             $classMetadata->features[$key] = $metadata;

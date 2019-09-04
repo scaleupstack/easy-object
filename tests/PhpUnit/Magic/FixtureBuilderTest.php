@@ -77,7 +77,7 @@ final class FixtureBuilderTest extends TestCase
         // but the ClassMetadata has no build() method
         /** @var ClassMetadata $classMetadata */
         $classMetadata = clone $classMetadata;
-        unset($classMetadata->features[VirtualMethods::FEATURES_KEY]['build']);
+        unset($classMetadata->features[VirtualMethods::class]['build']);
 
         // when checking if the handler can handle a with method
         $result = $callHandler->canHandle($methodName, $classMetadata, []);
@@ -104,10 +104,10 @@ final class FixtureBuilderTest extends TestCase
         Assert::true($callHandler->canHandle($methodName, $classMetadata, []));
         // but the ClassMetadata's build() method has no return type
         $classMetadata = clone $classMetadata;
-        $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'] =
-            clone $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'];
+        $classMetadata->features[VirtualMethods::class]['build'] =
+            clone $classMetadata->features[VirtualMethods::class]['build'];
         Reflection::setPropertyValue(
-            $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'],
+            $classMetadata->features[VirtualMethods::class]['build'],
             'returnType',
             new DataTypeMetadata(null)
         );

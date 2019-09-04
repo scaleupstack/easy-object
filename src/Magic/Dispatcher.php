@@ -150,7 +150,7 @@ final class Dispatcher
         ClassMetadata $classMetadata
     )
     {
-        $methodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
+        $methodMetadata = $classMetadata->features[VirtualMethods::class][$methodName];
         $expectedParameterCount = count($methodMetadata->parameters);
 
         $givenParametersCount = count($parameters);
@@ -180,7 +180,7 @@ final class Dispatcher
     )
     {
         /** @var VirtualMethodMetadata $virtualMethodMetadata */
-        $virtualMethodMetadata = $classMetadata->features[VirtualMethods::FEATURES_KEY][$methodName];
+        $virtualMethodMetadata = $classMetadata->features[VirtualMethods::class][$methodName];
         $returnType = $virtualMethodMetadata->returnType;
 
         if (! is_null($returnType->declaration())) {

@@ -137,7 +137,7 @@ EVAL_CODE;
     private function getMetadataOfClassToBeBuilt(ClassMetadata $classMetadata) : ?ClassMetadata
     {
         // get name of class to be built
-        $virtualBuildMethod = $classMetadata->features[VirtualMethods::FEATURES_KEY]['build'];
+        $virtualBuildMethod = $classMetadata->features[VirtualMethods::class]['build'];
         $buildClassName = $virtualBuildMethod->returnType->declaration();
 
         if (is_null($buildClassName)) {

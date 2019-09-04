@@ -31,7 +31,7 @@ abstract class AbstractCallHandler implements CallHandler
 
     protected function getMethodMetadata(string $methodName, ClassMetadata $classMetadata) : ?VirtualMethodMetadata
     {
-        $virtualMethods = $classMetadata->features[VirtualMethods::FEATURES_KEY];
+        $virtualMethods = $classMetadata->features[VirtualMethods::class];
 
         // check for corresponding @method annotation
         if (! array_key_exists($methodName, $virtualMethods)) {
