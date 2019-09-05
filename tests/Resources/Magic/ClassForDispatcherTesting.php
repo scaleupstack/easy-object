@@ -13,10 +13,12 @@
 namespace ScaleUpStack\EasyObject\Tests\Resources\Magic;
 
 /**
- * @method static self myFactoryMethod(int $someProperty)
+ * @method static self myFactoryMethod(int $someProperty, string $otherProperty)
  * @method int getSomeProperty()
  */
 final class ClassForDispatcherTesting
 {
     private $someProperty = 42;
+
+    private $otherProperty;
 }

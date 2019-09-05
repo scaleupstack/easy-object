@@ -15,6 +15,7 @@ namespace ScaleUpStack\EasyObject\Magic;
 use ScaleUpStack\Metadata\FeatureAnalyzers\VirtualMethods;
 use ScaleUpStack\Metadata\Metadata\ClassMetadata;
 use ScaleUpStack\Metadata\Factory;
+use ScaleUpStack\Metadata\Metadata\DataTypeMetadata;
 use ScaleUpStack\Metadata\Metadata\VirtualMethodMetadata;
 
 final class Dispatcher
@@ -96,7 +97,12 @@ final class Dispatcher
                 throw new \Error("Calling a non-static method when not in object context.");
             }
 
-            $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
+            $this->assertGivenParametersMatchMethodSignature(
+                $objectOrClassName,
+                $methodName,
+                $arguments,
+                $classMetadata
+            );
 
             $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
 
@@ -158,16 +164,22 @@ final class Dispatcher
         return null;
     }
 
+    /**
+     * @param object|string $objectContext
+     */
     private function assertGivenParametersMatchMethodSignature(
+        $objectContext,
         string $methodName,
-        array $parameters,
+        array $givenParameters,
         ClassMetadata $classMetadata
     )
     {
+        /** @var VirtualMethodMetadata $methodMetadata */
         $methodMetadata = $classMetadata->features[VirtualMethods::class][$methodName];
-        $expectedParameterCount = count($methodMetadata->parameters);
 
-        $givenParametersCount = count($parameters);
+        // validate parameter count according to method signature
+        $expectedParameterCount = count($methodMetadata->parameters);
+        $givenParametersCount = count($givenParameters);
 
         if ($expectedParameterCount !== $givenParametersCount) {
             throw new \ArgumentCountError(
@@ -176,10 +188,30 @@ final class Dispatcher
                     $expectedParameterCount > $givenParametersCount ? 'few' : 'many',
                     $classMetadata->name,
                     $methodName,
-                    count($parameters),
+                    count($givenParameters),
                     $expectedParameterCount
                 )
             );
+        }
+
+        // validate parameters' data types according to method signature
+        $key = 0;
+        /** @var DataTypeMetadata $signatureParameter */
+        foreach ($methodMetadata->parameters as $signatureParameterName => $signatureParameter) {
+            $parameterValue = $givenParameters[$key];
+            if (! $signatureParameter->validateVariable($parameterValue, $objectContext)) {
+                throw new \TypeError(
+                    sprintf(
+                        'Argument %s (%s) passed to %s() must be of the type %s, %s given',
+                        $key + 1,
+                        $signatureParameterName,
+                        $methodName,
+                        $signatureParameter->declaration(),
+                        gettype($parameterValue)
+                    )
+                );
+            }
+            $key++;
         }
     }
 

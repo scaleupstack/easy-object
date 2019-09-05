@@ -80,6 +80,7 @@ final class DispatcherTest extends TestCase
             'myFactoryMethod',
             [
                 17,
+                'some string'
             ],
             $supportedCallHandlers
         );
@@ -153,6 +154,41 @@ final class DispatcherTest extends TestCase
             'getSomeProperty',
             [
                 'no parameter allowed'
+            ],
+            $supportedCallHandlers
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::assertGivenParametersMatchMethodSignature()
+     */
+    public function it_throws_an_exception_on_invalid_parameter_types()
+    {
+        // given an object, and a list of supported call handlers
+        $object = new ClassForDispatcherTesting();
+        $supportedCallHandlers = [
+            [
+                NamedConstructor::class,
+                [
+                    'methodName' => 'myFactoryMethod',
+                ]
+            ]
+        ];
+
+        // when invoking an allowed method, but with wrong arguments
+        // then an exception is thrown
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage(
+            'Argument 2 (otherProperty) passed to myFactoryMethod() must be of the type string, integer given'
+        );
+
+        $result = Dispatcher::invoke(
+            $object,
+            'myFactoryMethod',
+            [
+                17,
+                42, // must be string
             ],
             $supportedCallHandlers
         );
