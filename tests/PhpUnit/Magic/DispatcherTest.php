@@ -32,6 +32,7 @@ final class DispatcherTest extends TestCase
      * @covers ::classMetadata()
      * @covers ::invoke()
      * @covers ::doInvocation()
+     * @covers ::determineCallHandler()
      * @covers ::assertGivenParametersMatchMethodSignature()
      * @covers ::assertCorrectReturnType()
      */
@@ -89,6 +90,22 @@ final class DispatcherTest extends TestCase
             17,
             Reflection::getPropertyValue($result, 'someProperty')
         );
+    }
+
+    /**
+     * @test
+     * @covers ::determineCallHandler()
+     */
+    public function it_accepts_call_handlers_with_options()
+    {
+        // given a ClassName with a CallHandler that has options (like the NamedConstructor in
+        // ClassForNamedConstructorTesting)
+
+        // when determining the CallHandler
+        $newObject = ClassForNamedConstructorTesting::create('some other string', 11);
+
+        // then the relevant options have been used
+        $this->assertInstanceOf(ClassForNamedConstructorTesting::class, $newObject);
     }
 
     /**
@@ -203,6 +220,7 @@ final class DispatcherTest extends TestCase
     /**
      * @test
      * @covers ::doInvocation()
+     * @covers ::determineCallHandler()
      */
     public function it_throws_an_exception_if_no_call_handler_can_handle_the_method()
     {

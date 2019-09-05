@@ -57,7 +57,8 @@ final class Dispatcher
         array $prioritizedCallHandlerClassNames
     )
     {
-        return self::doInvocation($object, $methodName, $arguments, $prioritizedCallHandlerClassNames, false);
+        return self::instance()
+            ->doInvocation($object, $methodName, $arguments, $prioritizedCallHandlerClassNames, false);
     }
 
     public static function invokeStatically(
@@ -67,59 +68,41 @@ final class Dispatcher
         array $prioritizedCallHandlerClassNames
     )
     {
-        return self::doInvocation($className, $methodName, $arguments, $prioritizedCallHandlerClassNames, true);
+        return self::instance()
+            ->doInvocation($className, $methodName, $arguments, $prioritizedCallHandlerClassNames, true);
     }
 
     /**
      * @param object|string $objectOrClassName
      */
-    private static function doInvocation(
+    private function doInvocation(
         $objectOrClassName,
         string $methodName,
         array $arguments,
-        array $prioritizedCallHandlerClassNames,
+        array $prioritizedCallHandlers,
         bool $isStatic
     )
     {
-        $instance = self::instance();
-
         $className = $isStatic ? $objectOrClassName : get_class($objectOrClassName);
-        $classMetadata = $instance->classMetadata($className);
+        $classMetadata = $this->classMetadata($className);
 
-        foreach ($prioritizedCallHandlerClassNames as $callHandlerData) {
-            // prepare $callHandlerClassName and $options
-            if (is_array($callHandlerData)) {
-                $callHandlerClassName = $callHandlerData[0];
-                $options = $callHandlerData[1];
-            } else {
-                $callHandlerClassName = $callHandlerData;
-                $options = [];
+        $callHandler = $this->determineCallHandler($methodName, $classMetadata, $prioritizedCallHandlers);
+
+        if (! is_null($callHandler)) {
+            if (
+                $isStatic &&
+                $callHandler->requiresObjectContext()
+            ) {
+                throw new \Error("Calling a non-static method when not in object context.");
             }
 
-            // retrieve $callHandler
-            if (! array_key_exists($callHandlerClassName, $instance->callHandlers)) {
-                $instance->callHandlers[$callHandlerClassName] = new $callHandlerClassName();
-            }
+            $this->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
 
-            $callHandler = $instance->callHandlers[$callHandlerClassName];
+            $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
 
-            // execute
-            if ($callHandler->canHandle($methodName, $classMetadata, $options)) {
-                $instance->assertGivenParametersMatchMethodSignature($methodName, $arguments, $classMetadata);
+            $this->assertCorrectReturnType($objectOrClassName, $methodName, $return, $classMetadata);
 
-                if (
-                    $isStatic &&
-                    $callHandler->requiresObjectContext()
-                ) {
-                    throw new \Error("Calling a non-static method when not in object context.");
-                }
-
-                $return = $callHandler->execute($objectOrClassName, $methodName, $arguments, $classMetadata);
-
-                $instance->assertCorrectReturnType($objectOrClassName, $methodName, $return, $classMetadata);
-
-                return $return;
-            }
+            return $return;
         }
 
         if (
@@ -142,6 +125,37 @@ final class Dispatcher
     {
         return Factory::getMetadataForClass($className)
             ->classMetadata[$className];
+    }
+
+    private function determineCallHandler(
+        string $methodName,
+        ClassMetadata $classMetadata,
+        array $prioritizedCallHandlers
+    ) : ?CallHandler
+    {
+        foreach ($prioritizedCallHandlers as $callHandlerData) {
+            // prepare $callHandlerClassName and $options
+            if (is_array($callHandlerData)) {
+                $callHandlerClassName = $callHandlerData[0];
+                $options = $callHandlerData[1];
+            } else {
+                $callHandlerClassName = $callHandlerData;
+                $options = [];
+            }
+
+            // retrieve $callHandler
+            if (! array_key_exists($callHandlerClassName, $this->callHandlers)) {
+                $this->callHandlers[$callHandlerClassName] = new $callHandlerClassName();
+            }
+            $callHandler = $this->callHandlers[$callHandlerClassName];
+
+            // check if it can handle the method
+            if ($callHandler->canHandle($methodName, $classMetadata, $options)) {
+                return $callHandler;
+            }
+        }
+
+        return null;
     }
 
     private function assertGivenParametersMatchMethodSignature(
