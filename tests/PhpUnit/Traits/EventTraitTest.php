@@ -15,6 +15,7 @@ namespace ScaleUpStack\EasyObject\Tests\PhpUnit\Traits;
 use ScaleUpStack\EasyObject\Tests\Resources\Traits\ForEventTraitTesting;
 use ScaleUpStack\EasyObject\Traits\EventTrait;
 use ScaleUpStack\EasyObject\Tests\Resources\TestCase;
+use ScaleUpStack\Reflection\Reflection;
 
 /**
  * @coversDefaultClass \ScaleUpStack\EasyObject\Traits\EventTrait
@@ -36,5 +37,17 @@ final class EventTraitTest extends TestCase
 
         // then the property is accessible via the virtual getter
         $this->assertSame($someProperty, $event->someProperty());
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_be_constructed_via_new()
+    {
+        // the constructor must not be public
+        $this->assertFalse(
+            Reflection::methodOfClass(ForEventTraitTesting::class, '__construct')->isPublic(),
+            '__construct() must not be public'
+        );
     }
 }

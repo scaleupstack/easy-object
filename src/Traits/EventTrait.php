@@ -18,6 +18,13 @@ use ScaleUpStack\EasyObject\Magic\VirtualGetter;
 
 trait EventTrait
 {
+    /**
+     * @codeCoverageIgnore
+     */
+    private function __construct()
+    {
+    }
+
     public function __call(string $method, array $parameters)
     {
         return Dispatcher::invoke(
